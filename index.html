@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dozen Demo – Unified Grid (Draw + Numbers)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Dozen Demo</title>
 <style>
     * {
         box-sizing: border-box;
@@ -10,7 +11,7 @@
     }
     body {
         font-family: 'Segoe UI', Arial, sans-serif;
-        padding: 24px 20px;
+        padding: 16px 12px;
         background: #0a0f1a;
         color: #eef4ff;
     }
@@ -20,38 +21,38 @@
         letter-spacing: 0.5px;
     }
     h2 {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
         border-left: 5px solid #4caf50;
-        padding-left: 16px;
-        margin-bottom: 20px;
+        padding-left: 12px;
+        margin-bottom: 16px;
     }
     .app-container {
         display: flex;
-        gap: 28px;
+        gap: 20px;
         flex-wrap: wrap;
         align-items: flex-start;
     }
     .game-area {
         flex: 1;
-        min-width: 620px;
+        min-width: 280px;
         overflow-x: auto;
         background: #0f141f;
         border-radius: 20px;
-        padding: 16px;
+        padding: 12px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
     .right-panel {
-        width: 300px;
+        width: 280px;
         background: #0f141f;
         border-radius: 20px;
-        padding: 16px;
+        padding: 12px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
     .section-box {
         background: #121826;
         border-radius: 16px;
-        padding: 14px 16px;
-        margin-bottom: 20px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
         border: 1px solid #2a2f3f;
     }
     table {
@@ -62,25 +63,158 @@
     }
     th, td {
         border: 1px solid #2a2f3f;
-        width: 52px;
-        height: 52px;
         text-align: center;
         vertical-align: middle;
-        font-size: 15px;
         font-weight: 500;
         transition: all 0.08s linear;
+    }
+    /* Desktop defaults */
+    th, td {
+        width: 52px;
+        height: 52px;
+        font-size: 15px;
+    }
+    .hit, .miss, .dot {
+        font-size: 22px;
+    }
+    .draw-row-cell {
+        font-size: 17px;
     }
     th.axis {
         background: #1e2538;
         color: #bbd9ff;
         font-weight: 600;
         font-size: 13px;
-        letter-spacing: 0.3px;
     }
+    /* Mobile (max 768px) */
+    @media (max-width: 768px) {
+        th, td {
+            width: 12vw;
+            height: 12vw;
+            min-width: 40px;
+            min-height: 40px;
+            max-width: 60px;
+            max-height: 60px;
+            font-size: 4vw;
+        }
+        .hit, .miss, .dot {
+            font-size: 6vw;
+        }
+        .draw-row-cell {
+            font-size: 4vw;
+        }
+        th.axis {
+            font-size: 3.5vw;
+        }
+        .cell-default, .player-selected, .blocked {
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        h2 {
+            font-size: 1.2rem;
+        }
+        .section-title {
+            font-size: 1rem;
+        }
+        button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        .balance-area {
+            font-size: 20px;
+        }
+    }
+    /* Desktop fine-tune (min 769px) */
+    @media (min-width: 769px) {
+        th, td {
+            width: 52px;
+            height: 52px;
+            font-size: 15px;
+        }
+        .hit, .miss, .dot {
+            font-size: 24px;
+        }
+        .draw-row-cell {
+            font-size: 17px;
+        }
+        th.axis {
+            font-size: 13px;
+        }
+    }
+
+    /* --- ANIMÁCIÓK --- */
+
+    /* 1. Kattintás animáció (pulzálás) */
+    .cell-click-effect {
+        animation: cellPop 0.12s ease-in-out !important;
+    }
+    @keyframes cellPop {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.92); background-color: #3a5a7a; }
+        100% { transform: scale(1); }
+    }
+
+    /* 2. SORSOLÁS: DRAW cellák egymás utáni megjelenése */
+    .draw-appear {
+        animation: drawReveal 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        transform-origin: center;
+    }
+    @keyframes drawReveal {
+        0% { opacity: 0; transform: scale(0.7); background-color: #1a2a3a; }
+        80% { transform: scale(1.05); }
+        100% { opacity: 1; transform: scale(1); background-color: inherit; }
+    }
+
+    /* 3. Találat (hit) pulzáló glow effekt */
+    .hit {
+        background: #1b5e20 !important;
+        color: white;
+        font-weight: bold;
+        text-shadow: 0 0 2px #000;
+        animation: hitGlow 0.35s ease-out;
+    }
+    @keyframes hitGlow {
+        0% { box-shadow: 0 0 0 0 #a5d6a7, inset 0 0 0 0 #c8e6c9; }
+        50% { box-shadow: 0 0 0 4px #a5d6a7, inset 0 0 0 2px #c8e6c9; }
+        100% { box-shadow: 0 0 0 0 #a5d6a7, inset 0 0 0 0 #c8e6c9; }
+    }
+
+    /* 4. Pontok (dot) fade-in megjelenése */
+    .dot {
+        background: #2c3e55 !important;
+        color: #9fc9ff;
+        font-weight: bold;
+        text-shadow: 0 0 1px #fff;
+        animation: fadeInDot 0.2s ease-out;
+    }
+    @keyframes fadeInDot {
+        0% { opacity: 0; transform: scale(0.6); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Gomb hover már volt, de enyhe javítás */
+    button {
+        background: #2c3e66;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 40px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: white;
+        margin-right: 8px;
+        margin-top: 8px;
+    }
+    button:hover {
+        filter: brightness(1.1);
+        transform: scale(0.98);
+    }
+
+    /* További stílusok változatlanok */
     .draw-row-cell {
         background: #0b111c;
         font-weight: bold;
-        font-size: 17px;
         color: #eef4ff;
     }
     .draw-hit {
@@ -97,6 +231,7 @@
         background: #19212e;
         color: #cbd5ff;
         cursor: pointer;
+        transition: all 0.08s linear;
     }
     .player-selected {
         background: #4caf50 !important;
@@ -111,77 +246,37 @@
         cursor: not-allowed;
         opacity: 0.7;
     }
-    .hit {
-        background: #1b5e20 !important;
-        color: white;
-        font-size: 18px;
-        font-weight: bold;
-    }
     .miss {
         background: #8b2c2c !important;
         color: #ffcdd2;
-        font-size: 18px;
         font-weight: bold;
-    }
-    .dot {
-        background: #2c3e55 !important;
-        color: #9fc9ff;
-        font-size: 24px;
-        font-weight: bold;
-        text-shadow: 0 0 1px #fff;
-    }
-    button {
-        background: #2c3e66;
-        border: none;
-        padding: 8px 18px;
-        border-radius: 40px;
-        font-weight: bold;
-        font-size: 14px;
-        cursor: pointer;
-        transition: 0.2s;
-        color: white;
-        margin-right: 8px;
-        margin-top: 8px;
-    }
-    button:hover {
-        filter: brightness(1.1);
-        transform: scale(0.98);
-    }
-    #topUpBtn {
-        background: #1f6d49;
-    }
-    #startDrawBtn {
-        background: #0f6b8c;
-    }
-    #resetBtn {
-        background: #aa2e2e;
     }
     .bet-group {
         display: flex;
-        gap: 14px;
+        gap: 10px;
         flex-wrap: wrap;
-        margin: 12px 0 8px;
+        margin: 10px 0 6px;
     }
     .bet-group label {
         background: #1e2538;
-        padding: 6px 14px;
+        padding: 4px 12px;
         border-radius: 40px;
         cursor: pointer;
         font-weight: 600;
     }
     .bet-group input {
-        margin-right: 6px;
+        margin-right: 4px;
     }
     .play-row {
         display: flex;
-        gap: 12px;
+        gap: 8px;
         justify-content: center;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         flex-wrap: wrap;
     }
     .play-row label {
         background: #1e2538;
-        padding: 6px 16px;
+        padding: 4px 12px;
         border-radius: 40px;
         cursor: pointer;
         font-weight: 600;
@@ -193,15 +288,15 @@
     #resultInfo {
         background: #0a0f1a;
         border-radius: 14px;
-        padding: 12px;
-        font-size: 13px;
-        margin: 15px 0 5px;
+        padding: 10px;
+        font-size: 12px;
+        margin: 12px 0 5px;
         font-family: monospace;
         border-left: 3px solid #4caf50;
     }
     .accordion-header {
         background: #1a2132;
-        padding: 10px 12px;
+        padding: 8px 12px;
         border-radius: 14px;
         cursor: pointer;
         display: flex;
@@ -212,18 +307,18 @@
         display: none;
         background: #101520;
         border-radius: 14px;
-        margin-top: 12px;
-        padding: 8px;
+        margin-top: 10px;
+        padding: 6px;
     }
     .accordion-content.show {
         display: block;
     }
     #payoutTable {
         width: 100%;
-        font-size: 12px;
+        font-size: 11px;
     }
     #payoutTable td, #payoutTable th {
-        padding: 6px 4px;
+        padding: 4px 2px;
         text-align: center;
     }
     .balance-area {
@@ -237,16 +332,16 @@
     }
     .info-line {
         font-size: 13px;
-        margin: 8px 0;
+        margin: 6px 0;
     }
     .section-title {
         font-size: 18px;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         border-left: 3px solid #4caf50;
-        padding-left: 12px;
+        padding-left: 10px;
     }
     .draw-label {
-        font-size: 12px;
+        font-size: 11px;
         background: #00000066;
         border-radius: 20px;
         padding: 2px 8px;
@@ -255,12 +350,12 @@
 </style>
 </head>
 <body>
-<h2>🎲 DOZEN GAME – Unified Grid (Draw row integrated)</h2>
+<h2>🎯 DOZEN GAME</h2>
 <div class="app-container">
     <div class="game-area">
-        <div style="margin-bottom: 6px; display: flex; justify-content: space-between;">
-            <span class="draw-label">🎯 DRAW RESULTS + 12x12 BOARD (same table)</span>
-            <span class="draw-label">✔️ click numbers → select (shows the number) | 🟢 hit (number visible) | 🔴 miss (number visible) | ● dot</span>
+        <div style="margin-bottom: 6px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+            <span class="draw-label">🎯 DRAW + 12x12 BOARD</span>
+            <span class="draw-label">✔️ tap → select | 🟢 hit | 🔴 miss | ● dot</span>
         </div>
         <div style="overflow-x: auto;">
             <table id="unifiedGrid">
@@ -279,7 +374,7 @@
 
         <div class="section-box">
             <div class="section-title">⚡ BET MULTIPLIER</div>
-            <div class="bet-group" id="betMultiplierGroup">
+            <div class="bet-group">
                 <label><input type="radio" name="betMult" value="1"> 1×</label>
                 <label><input type="radio" name="betMult" value="2"> 2×</label>
                 <label><input type="radio" name="betMult" value="3"> 3×</label>
@@ -290,7 +385,7 @@
         </div>
 
         <div class="section-box">
-            <div class="section-title">🎲 PLAY TYPE (how many numbers)</div>
+            <div class="section-title">🎯 PLAY TYPE (how many numbers)</div>
             <div id="playTypes"></div>
         </div>
 
@@ -316,7 +411,6 @@
 
 <script>
     const SIZE = 12;
-    // ------------- PAYOUTS -------------
     const payoutTable = {
         1:{0:0,1:10},
         2:{0:0,1:0,2:35},
@@ -331,13 +425,11 @@
         11:{0:0,1:0,2:1,3:4,4:20,5:80,6:400,7:2500,8:20000,9:80000,10:200000,11:1000000}
     };
 
-    // ---------- Global state ----------
     let balance = 0;
     let selectedCells = [];
     let currentPlayType = null;
     let currentBetMultiplier = null;
 
-    // DOM elements
     const gridBody = document.getElementById("gridBody");
     const gridHeader = document.getElementById("gridHeader");
     const balanceDiv = document.getElementById("balanceInfo");
@@ -349,18 +441,17 @@
     const playTypesDiv = document.getElementById("playTypes");
     const payoutTbody = document.querySelector("#payoutTable tbody");
 
-    function updateBalanceUI() {
-        balanceDiv.textContent = `Balance: ${balance}`;
-    }
+    function updateBalanceUI() { balanceDiv.textContent = `Balance: ${balance}`; }
+    function getSelectedPlayType() { const c = document.querySelector("input[name='playType']:checked"); return c ? parseInt(c.value,10) : null; }
+    function getSelectedBetMultiplier() { const c = document.querySelector("input[name='betMult']:checked"); return c ? parseInt(c.value,10) : null; }
 
-    function getSelectedPlayType() {
-        const checked = document.querySelector("input[name='playType']:checked");
-        return checked ? parseInt(checked.value, 10) : null;
-    }
-
-    function getSelectedBetMultiplier() {
-        const checked = document.querySelector("input[name='betMult']:checked");
-        return checked ? parseInt(checked.value, 10) : null;
+    // Kattintás animáció a cellákhoz
+    function animateCellClick(cell) {
+        if (!cell) return;
+        cell.classList.remove('cell-click-effect');
+        void cell.offsetWidth; // force reflow
+        cell.classList.add('cell-click-effect');
+        setTimeout(() => { cell.classList.remove('cell-click-effect'); }, 150);
     }
 
     function rebuildBlocking() {
@@ -374,19 +465,16 @@
             });
             return;
         }
-
-        const selectedNumbers = selectedCells.map(cell => parseInt(cell.dataset.number, 10));
-        const selectedDraws = selectedCells.map(cell => parseInt(cell.dataset.draw, 10));
+        const selectedNumbers = selectedCells.map(c => parseInt(c.dataset.number,10));
+        const selectedDraws = selectedCells.map(c => parseInt(c.dataset.draw,10));
         const isFull = selectedCells.length >= pt;
-
         document.querySelectorAll("#gridBody tr:not(.draw-row) td").forEach(td => {
             if (td.classList.contains("player-selected") || td.classList.contains("hit") || td.classList.contains("miss")) return;
-            const num = parseInt(td.dataset.number, 10);
-            const draw = parseInt(td.dataset.draw, 10);
+            const num = parseInt(td.dataset.number,10);
+            const draw = parseInt(td.dataset.draw,10);
             let blocked = false;
             if (isFull) blocked = true;
             else if (selectedNumbers.includes(num) || selectedDraws.includes(draw)) blocked = true;
-
             if (blocked) {
                 td.classList.remove("cell-default", "dot");
                 td.classList.add("blocked");
@@ -399,27 +487,21 @@
 
     function resetBoard(keepPlayType = false) {
         selectedCells = [];
-        const allNumberCells = document.querySelectorAll("#gridBody tr:not(.draw-row) td");
-        allNumberCells.forEach(td => {
+        document.querySelectorAll("#gridBody tr:not(.draw-row) td").forEach(td => {
             td.className = "cell-default";
             td.innerHTML = "";
-            td.classList.remove("player-selected", "hit", "miss", "dot", "blocked");
-            td.style.background = "";
+            td.classList.remove("player-selected","hit","miss","dot","blocked");
         });
-        const drawRowCells = document.querySelectorAll("#gridBody tr.draw-row td");
-        drawRowCells.forEach(td => {
+        document.querySelectorAll("#gridBody tr.draw-row td").forEach(td => {
             td.textContent = "";
-            td.classList.remove("draw-hit", "draw-miss");
+            td.classList.remove("draw-hit","draw-miss","draw-appear");
             td.className = "draw-row-cell";
         });
-
         if (!keepPlayType) {
-            const playRadios = document.querySelectorAll("input[name='playType']");
-            playRadios.forEach(r => r.checked = false);
+            document.querySelectorAll("input[name='playType']").forEach(r => r.checked=false);
             currentPlayType = null;
         }
-        const betRadios = document.querySelectorAll("input[name='betMult']");
-        betRadios.forEach(r => r.checked = false);
+        document.querySelectorAll("input[name='betMult']").forEach(r => r.checked=false);
         currentBetMultiplier = null;
         betInfoSpan.textContent = "Current bet: –";
         resultInfoDiv.textContent = "Play type: – | Hits: – | Accuracy: – | Payout: – | Win: –";
@@ -429,14 +511,11 @@
     function onNumberCellClick(event) {
         const td = event.currentTarget;
         if (td.classList.contains("blocked") || td.classList.contains("hit") || td.classList.contains("miss")) return;
-
         const pt = getSelectedPlayType();
-        if (!pt) {
-            alert("❗ Please select a Play Type first!");
-            return;
-        }
+        if (!pt) { alert("Please select a Play Type first."); return; }
+        // Kattintási animáció
+        animateCellClick(td);
 
-        // Deselect
         if (td.classList.contains("player-selected")) {
             td.classList.remove("player-selected");
             td.classList.add("cell-default");
@@ -445,16 +524,10 @@
             rebuildBlocking();
             return;
         }
-
-        // Select new cell
-        if (selectedCells.length >= pt) {
-            alert(`⚠️ You can select maximum ${pt} numbers! (Play type ${pt})`);
-            return;
-        }
-
-        td.classList.remove("cell-default", "blocked");
+        if (selectedCells.length >= pt) { alert(`You can select at most ${pt} numbers.`); return; }
+        td.classList.remove("cell-default","blocked");
         td.classList.add("player-selected");
-        td.innerHTML = td.dataset.number;    // megjelenítjük a kiválasztott számot
+        td.innerHTML = td.dataset.number;
         selectedCells.push(td);
         rebuildBlocking();
     }
@@ -462,30 +535,28 @@
     function buildUnifiedGrid() {
         gridHeader.innerHTML = "";
         gridBody.innerHTML = "";
-
         const headRow = document.createElement("tr");
         const cornerTh = document.createElement("th");
         cornerTh.textContent = "#";
         cornerTh.className = "axis";
         headRow.appendChild(cornerTh);
-        for (let d = 1; d <= SIZE; d++) {
+        for (let d=1; d<=SIZE; d++) {
             const th = document.createElement("th");
             th.className = "axis";
-            if (d === 1) th.textContent = "1st";
-            else if (d === 2) th.textContent = "2nd";
-            else if (d === 3) th.textContent = "3rd";
+            if (d===1) th.textContent = "1st";
+            else if (d===2) th.textContent = "2nd";
+            else if (d===3) th.textContent = "3rd";
             else th.textContent = `${d}th`;
             headRow.appendChild(th);
         }
         gridHeader.appendChild(headRow);
-
         const drawTr = document.createElement("tr");
         drawTr.classList.add("draw-row");
         const drawLabel = document.createElement("th");
-        drawLabel.textContent = "🎲 DRAW";
+        drawLabel.textContent = "🎯 DRAW";
         drawLabel.className = "axis";
         drawTr.appendChild(drawLabel);
-        for (let d = 1; d <= SIZE; d++) {
+        for (let d=1; d<=SIZE; d++) {
             const td = document.createElement("td");
             td.classList.add("draw-row-cell");
             td.id = `draw-cell-${d}`;
@@ -493,14 +564,13 @@
             drawTr.appendChild(td);
         }
         gridBody.appendChild(drawTr);
-
-        for (let num = 1; num <= SIZE; num++) {
+        for (let num=1; num<=SIZE; num++) {
             const row = document.createElement("tr");
             const rowHeader = document.createElement("th");
             rowHeader.textContent = num;
             rowHeader.className = "axis";
             row.appendChild(rowHeader);
-            for (let draw = 1; draw <= SIZE; draw++) {
+            for (let draw=1; draw<=SIZE; draw++) {
                 const td = document.createElement("td");
                 td.dataset.number = num;
                 td.dataset.draw = draw;
@@ -511,107 +581,74 @@
             }
             gridBody.appendChild(row);
         }
-
         selectedCells = [];
         rebuildBlocking();
     }
 
     function applyDotMarkers(drawnNumbersArray) {
-        for (let drawIdx = 0; drawIdx < SIZE; drawIdx++) {
+        for (let drawIdx=0; drawIdx<SIZE; drawIdx++) {
             const drawnNum = drawnNumbersArray[drawIdx];
             const targetCell = document.getElementById(`cell-${drawnNum}-${drawIdx+1}`);
             if (!targetCell) continue;
-            if (!targetCell.classList.contains("player-selected") &&
-                !targetCell.classList.contains("hit") &&
-                !targetCell.classList.contains("miss")) {
-                targetCell.classList.remove("cell-default", "blocked");
+            if (!targetCell.classList.contains("player-selected") && !targetCell.classList.contains("hit") && !targetCell.classList.contains("miss")) {
+                targetCell.classList.remove("cell-default","blocked");
                 targetCell.classList.add("dot");
                 targetCell.innerHTML = "●";
+                // fade-in már a CSS-ben benne van (animation)
             }
         }
     }
 
     function startDraw() {
         const playType = getSelectedPlayType();
-        if (!playType) {
-            alert("🎯 Please choose a Play Type (how many numbers to select)");
-            return;
-        }
+        if (!playType) { alert("Please choose a Play Type."); return; }
         const betMult = getSelectedBetMultiplier();
-        if (!betMult) {
-            alert("⚡ Please select a Bet Multiplier (1x-5x)");
-            return;
-        }
-        if (selectedCells.length !== playType) {
-            alert(`❗ You must select exactly ${playType} numbers on the grid! Currently selected: ${selectedCells.length}`);
-            return;
-        }
-
+        if (!betMult) { alert("Please select a Bet Multiplier."); return; }
+        if (selectedCells.length !== playType) { alert(`You must select exactly ${playType} numbers.`); return; }
         const betAmount = betMult;
-        if (balance < betAmount) {
-            alert("❌ Insufficient balance! Please top up.");
-            return;
-        }
-
+        if (balance < betAmount) { alert("Insufficient balance. Please top up."); return; }
         balance -= betAmount;
         updateBalanceUI();
-
-        const numbers = Array.from({length: SIZE}, (_, i) => i+1);
-        for (let i = numbers.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
-        }
+        const numbers = Array.from({length:SIZE}, (_,i)=>i+1);
+        for (let i=numbers.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [numbers[i],numbers[j]]=[numbers[j],numbers[i]]; }
         const drawnResults = [...numbers];
 
-        const allNumberCells = document.querySelectorAll("#gridBody tr:not(.draw-row) td");
-        allNumberCells.forEach(td => {
-            if (td.classList.contains("player-selected")) {
-                td.classList.remove("hit", "miss", "dot");
-                // Ne töröljük a tartalmát, mert a számot majd kiírjuk
-            } else {
-                td.classList.remove("hit", "miss", "dot", "player-selected");
-                td.classList.add("cell-default");
-                td.innerHTML = "";
-            }
+        document.querySelectorAll("#gridBody tr:not(.draw-row) td").forEach(td => {
+            if (td.classList.contains("player-selected")) { td.classList.remove("hit","miss","dot"); td.innerHTML = ""; }
+            else { td.classList.remove("hit","miss","dot","player-selected"); td.classList.add("cell-default"); td.innerHTML = ""; }
             td.classList.remove("blocked");
         });
 
+        // Clear draw row
         const drawRowCells = document.querySelectorAll("#gridBody tr.draw-row td");
         drawRowCells.forEach(td => {
             td.textContent = "";
-            td.classList.remove("draw-hit", "draw-miss");
+            td.classList.remove("draw-hit","draw-miss","draw-appear");
         });
 
         let hits = 0;
         selectedCells.forEach(cell => {
-            const selectedNumber = parseInt(cell.dataset.number, 10);
-            const drawPos = parseInt(cell.dataset.draw, 10);
+            const selectedNumber = parseInt(cell.dataset.number,10);
+            const drawPos = parseInt(cell.dataset.draw,10);
             const resultValue = drawnResults[drawPos-1];
             if (resultValue === selectedNumber) {
-                cell.classList.remove("player-selected", "cell-default");
+                cell.classList.remove("player-selected","cell-default");
                 cell.classList.add("hit");
-                cell.innerHTML = selectedNumber;   // a szám marad látható
+                cell.innerHTML = selectedNumber;
                 hits++;
                 const drawCell = document.getElementById(`draw-cell-${drawPos}`);
-                if (drawCell) {
-                    drawCell.textContent = resultValue;
-                    drawCell.classList.remove("draw-miss");
-                    drawCell.classList.add("draw-hit");
-                }
+                if (drawCell) { drawCell.textContent = resultValue; drawCell.classList.remove("draw-miss"); drawCell.classList.add("draw-hit"); }
             } else {
-                cell.classList.remove("player-selected", "cell-default");
+                cell.classList.remove("player-selected","cell-default");
                 cell.classList.add("miss");
-                cell.innerHTML = selectedNumber;   // a szám marad látható
+                cell.innerHTML = selectedNumber;
                 const drawCell = document.getElementById(`draw-cell-${drawPos}`);
-                if (drawCell) {
-                    drawCell.textContent = resultValue;
-                    drawCell.classList.remove("draw-hit");
-                    drawCell.classList.add("draw-miss");
-                }
+                if (drawCell) { drawCell.textContent = resultValue; drawCell.classList.remove("draw-hit"); drawCell.classList.add("draw-miss"); }
             }
         });
 
-        for (let i = 1; i <= SIZE; i++) {
+        // DRAW oszlopok feltöltése és animáció (stagger)
+        for (let i=1; i<=SIZE; i++) {
             const drawCell = document.getElementById(`draw-cell-${i}`);
             if (drawCell && drawCell.textContent === "") {
                 drawCell.textContent = drawnResults[i-1];
@@ -619,25 +656,28 @@
                     drawCell.classList.add("draw-row-cell");
                 }
             }
+            // Animáció hozzáadása minden draw cellához balról jobbra
+            if (drawCell) {
+                drawCell.classList.remove("draw-appear");
+                void drawCell.offsetWidth;
+                drawCell.classList.add("draw-appear");
+                drawCell.style.animationDelay = `${(i-1) * 0.04}s`;
+            }
         }
 
         applyDotMarkers(drawnResults);
 
-        const accuracy = (hits / playType) * 100;
+        const accuracy = (hits/playType)*100;
         const payoutMultiplier = payoutTable[playType]?.[hits] || 0;
         const winAmount = payoutMultiplier * betAmount;
-        if (winAmount > 0) {
-            balance += winAmount;
-            updateBalanceUI();
-        }
-
-        resultInfoDiv.innerHTML = `🎲 Play type: ${playType} | 🎯 Hits: ${hits} | 📊 Accuracy: ${accuracy.toFixed(2)}% | 💰 Payout: ${payoutMultiplier}x | 💎 Win: ${winAmount}`;
+        if (winAmount > 0) { balance += winAmount; updateBalanceUI(); }
+        resultInfoDiv.innerHTML = `🎯 Play type: ${playType} | 🎯 Hits: ${hits} | 📊 Accuracy: ${accuracy.toFixed(2)}% | 💰 Payout: ${payoutMultiplier}x | 💎 Win: ${winAmount}`;
         rebuildBlocking();
     }
 
     function buildPlayTypeRadios() {
         playTypesDiv.innerHTML = "";
-        const groups = [[1,2,3,4,5], [6,7,8,9,10], [11]];
+        const groups = [[1,2,3,4,5],[6,7,8,9,10],[11]];
         groups.forEach(group => {
             const rowDiv = document.createElement("div");
             rowDiv.className = "play-row";
@@ -649,11 +689,7 @@
                 radio.value = pt;
                 radio.addEventListener("change", (e) => {
                     if (e.target.checked) {
-                        selectedCells.forEach(cell => {
-                            cell.classList.remove("player-selected");
-                            cell.classList.add("cell-default");
-                            cell.innerHTML = "";
-                        });
+                        selectedCells.forEach(cell => { cell.classList.remove("player-selected"); cell.classList.add("cell-default"); cell.innerHTML = ""; });
                         selectedCells = [];
                         rebuildBlocking();
                         currentPlayType = pt;
@@ -668,27 +704,17 @@
     }
 
     function initBetMultipliers() {
-        const radios = document.querySelectorAll("input[name='betMult']");
-        radios.forEach(radio => {
-            radio.addEventListener("change", () => {
-                if (radio.checked) {
-                    currentBetMultiplier = parseInt(radio.value, 10);
-                    betInfoSpan.textContent = `Current bet: ${currentBetMultiplier} units`;
-                }
-            });
+        document.querySelectorAll("input[name='betMult']").forEach(radio => {
+            radio.addEventListener("change", () => { if (radio.checked) { currentBetMultiplier = parseInt(radio.value,10); betInfoSpan.textContent = `Current bet: ${currentBetMultiplier} units`; } });
         });
     }
 
     function buildPayoutTable() {
         payoutTbody.innerHTML = "";
-        for (let p = 1; p <= 11; p++) {
-            const rowMap = payoutTable[p];
-            for (let hitsKey in rowMap) {
+        for (let p=1; p<=11; p++) {
+            for (let hitsKey in payoutTable[p]) {
                 const tr = document.createElement("tr");
-                const tdPlay = document.createElement("td"); tdPlay.textContent = p;
-                const tdHits = document.createElement("td"); tdHits.textContent = hitsKey;
-                const tdMult = document.createElement("td"); tdMult.textContent = rowMap[hitsKey];
-                tr.appendChild(tdPlay); tr.appendChild(tdHits); tr.appendChild(tdMult);
+                tr.innerHTML = `<td>${p}</td><td>${hitsKey}</td><td>${payoutTable[p][hitsKey]}</td>`;
                 payoutTbody.appendChild(tr);
             }
         }
@@ -699,16 +725,10 @@
         content.classList.toggle("show");
         document.getElementById("arrow").textContent = content.classList.contains("show") ? "▲" : "▼";
     });
-
-    topUpBtn.addEventListener("click", () => {
-        balance += 100;
-        updateBalanceUI();
-    });
-
+    topUpBtn.addEventListener("click", () => { balance += 100; updateBalanceUI(); });
     startDrawBtn.addEventListener("click", startDraw);
     resetBtn.addEventListener("click", () => resetBoard(false));
 
-    // Inicializálás
     buildUnifiedGrid();
     buildPlayTypeRadios();
     buildPayoutTable();
