@@ -438,13 +438,12 @@
     // --- SOUND SYSTEM ---
     let audioCtx = null;
     let soundEnabled = true;
-
+    
     function initAudio() {
         if (audioCtx) return;
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        // start suspended - will resume on first user interaction
     }
-
+    
     function playSound(type) {
         if (!soundEnabled) return;
         if (!audioCtx) initAudio();
@@ -456,13 +455,12 @@
             generateSound(type);
         }
     }
-
+    
     function generateSound(type) {
         if (!audioCtx) return;
         const now = audioCtx.currentTime;
         switch(type) {
             case 'click':
-                // short click (800Hz, 0.05s)
                 const oscClick = audioCtx.createOscillator();
                 const gainClick = audioCtx.createGain();
                 oscClick.connect(gainClick);
@@ -474,7 +472,6 @@
                 oscClick.stop(now + 0.05);
                 break;
             case 'hit':
-                // positive chime: 1200Hz -> 1500Hz sweep
                 const oscHit = audioCtx.createOscillator();
                 const gainHit = audioCtx.createGain();
                 oscHit.connect(gainHit);
@@ -487,7 +484,6 @@
                 oscHit.stop(now + 0.2);
                 break;
             case 'miss':
-                // low "puff": 200Hz, short
                 const oscMiss = audioCtx.createOscillator();
                 const gainMiss = audioCtx.createGain();
                 oscMiss.connect(gainMiss);
@@ -499,7 +495,6 @@
                 oscMiss.stop(now + 0.1);
                 break;
             case 'fanfare':
-                // three notes: C E G (523, 659, 784)
                 const notes = [523, 659, 784];
                 notes.forEach((freq, idx) => {
                     const osc = audioCtx.createOscillator();
@@ -512,6 +507,19 @@
                     osc.start(now + idx * 0.1);
                     osc.stop(now + idx * 0.1 + 0.2);
                 });
+                break;
+            case 'sad':
+                // sad descending "búú" sound
+                const oscSad = audioCtx.createOscillator();
+                const gainSad = audioCtx.createGain();
+                oscSad.connect(gainSad);
+                gainSad.connect(audioCtx.destination);
+                oscSad.frequency.setValueAtTime(400, now);
+                oscSad.frequency.exponentialRampToValueAtTime(200, now + 0.6);
+                gainSad.gain.setValueAtTime(0.2, now);
+                gainSad.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+                oscSad.start(now);
+                oscSad.stop(now + 0.7);
                 break;
             default: break;
         }
@@ -604,12 +612,12 @@
     function onNumberCellClick(event) {
         const td = event.currentTarget;
         if (td.classList.contains("blocked") || td.classList.contains("hit") || td.classList.contains("miss")) return;
-        initAudio(); // ensure audio context exists
+        initAudio();
         playSound('click');
         const pt = getSelectedPlayType();
         if (!pt) { alert("Please select a Play Type first."); return; }
         animateCellClick(td);
-
+        
         if (td.classList.contains("player-selected")) {
             td.classList.remove("player-selected");
             td.classList.add("cell-default");
@@ -699,23 +707,27 @@
         if (!betMult) { alert("Please select a Bet Multiplier."); return; }
         if (selectedCells.length !== playType) { alert(`You must select exactly ${playType} numbers.`); return; }
         const betAmount = betMult;
-        if (balance < betAmount) { alert("Insufficient balance. Please top up."); return; }
+        if (balance < betAmount) {
+            playSound('sad');
+            alert("Insufficient balance. Please top up.");
+            return;
+        }
         balance -= betAmount;
         updateBalanceUI();
-
+        
         const numbers = Array.from({length:SIZE}, (_,i)=>i+1);
         for (let i=numbers.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [numbers[i],numbers[j]]=[numbers[j],numbers[i]]; }
         const drawnResults = [...numbers];
-
+        
         document.querySelectorAll("#gridBody tr:not(.draw-row) td").forEach(td => {
             if (td.classList.contains("player-selected")) { td.classList.remove("hit","miss","dot"); td.innerHTML = ""; }
             else { td.classList.remove("hit","miss","dot","player-selected"); td.classList.add("cell-default"); td.innerHTML = ""; }
             td.classList.remove("blocked");
         });
-
+        
         const drawRowCells = document.querySelectorAll("#gridBody tr.draw-row td");
         drawRowCells.forEach(td => { td.textContent = ""; td.classList.remove("draw-hit","draw-miss","draw-appear"); });
-
+        
         let hits = 0;
         selectedCells.forEach(cell => {
             const selectedNumber = parseInt(cell.dataset.number,10);
@@ -738,7 +750,7 @@
                 if (drawCell) { drawCell.textContent = resultValue; drawCell.classList.remove("draw-hit"); drawCell.classList.add("draw-miss"); }
             }
         });
-
+        
         for (let i=1; i<=SIZE; i++) {
             const drawCell = document.getElementById(`draw-cell-${i}`);
             if (drawCell && drawCell.textContent === "") { drawCell.textContent = drawnResults[i-1]; if (!drawCell.classList.contains("draw-hit") && !drawCell.classList.contains("draw-miss")) drawCell.classList.add("draw-row-cell"); }
@@ -749,10 +761,10 @@
                 drawCell.style.animationDelay = `${(i-1) * 0.04}s`;
             }
         }
-
+        
         applyDotMarkers(drawnResults);
         playSound('fanfare');
-
+        
         const accuracy = (hits/playType)*100;
         const payoutMultiplier = payoutTable[playType]?.[hits] || 0;
         const winAmount = payoutMultiplier * betAmount;
@@ -821,8 +833,7 @@
     initBetMultipliers();
     updateBalanceUI();
     resetBoard(false);
-
-    // init audio on first user click anywhere (optional)
+    
     document.body.addEventListener('click', () => {
         if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     }, { once: true });
