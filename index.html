@@ -1,83 +1,365 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Dozen Demo – Simple Sound</title>
+<title>Dozen Demo – Animated + Sound</title>
 <style>
-    * { box-sizing: border-box; user-select: none; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; padding: 16px 12px; background: #0a0f1a; color: #eef4ff; }
-    h2, h3 { margin: 0 0 12px 0; font-weight: 500; letter-spacing: 0.5px; }
-    h2 { font-size: 1.4rem; border-left: 5px solid #4caf50; padding-left: 12px; margin-bottom: 16px; }
-    .app-container { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
-    .game-area { flex: 1; min-width: 280px; overflow-x: auto; background: #0f141f; border-radius: 20px; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
-    .right-panel { width: 280px; background: #0f141f; border-radius: 20px; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
-    .section-box { background: #121826; border-radius: 16px; padding: 12px 14px; margin-bottom: 16px; border: 1px solid #2a2f3f; }
-    table { border-collapse: collapse; margin: 8px 0; width: 100%; table-layout: fixed; }
-    th, td { border: 1px solid #2a2f3f; text-align: center; vertical-align: middle; font-weight: 500; transition: all 0.08s linear; }
-    th, td { width: 52px; height: 52px; font-size: 15px; }
-    .hit, .miss, .dot { font-size: 22px; }
-    .draw-row-cell { font-size: 17px; }
-    th.axis { background: #1e2538; color: #bbd9ff; font-weight: 600; font-size: 13px; }
+    * {
+        box-sizing: border-box;
+        user-select: none;
+    }
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        padding: 16px 12px;
+        background: #0a0f1a;
+        color: #eef4ff;
+    }
+    h2, h3 {
+        margin: 0 0 12px 0;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    h2 {
+        font-size: 1.4rem;
+        border-left: 5px solid #4caf50;
+        padding-left: 12px;
+        margin-bottom: 16px;
+    }
+    .app-container {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    .game-area {
+        flex: 1;
+        min-width: 280px;
+        overflow-x: auto;
+        background: #0f141f;
+        border-radius: 20px;
+        padding: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .right-panel {
+        width: 280px;
+        background: #0f141f;
+        border-radius: 20px;
+        padding: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .section-box {
+        background: #121826;
+        border-radius: 16px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
+        border: 1px solid #2a2f3f;
+    }
+    table {
+        border-collapse: collapse;
+        margin: 8px 0;
+        width: 100%;
+        table-layout: fixed;
+    }
+    th, td {
+        border: 1px solid #2a2f3f;
+        text-align: center;
+        vertical-align: middle;
+        font-weight: 500;
+        transition: all 0.08s linear;
+    }
+    /* Desktop defaults */
+    th, td {
+        width: 52px;
+        height: 52px;
+        font-size: 15px;
+    }
+    .hit, .miss, .dot {
+        font-size: 22px;
+    }
+    .draw-row-cell {
+        font-size: 17px;
+    }
+    th.axis {
+        background: #1e2538;
+        color: #bbd9ff;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    /* Mobile (max 768px) */
     @media (max-width: 768px) {
-        th, td { width: 12vw; height: 12vw; min-width: 40px; min-height: 40px; max-width: 60px; max-height: 60px; font-size: 4vw; }
-        .hit, .miss, .dot { font-size: 6vw; }
-        .draw-row-cell { font-size: 4vw; }
-        th.axis { font-size: 3.5vw; }
-        .cell-default, .player-selected, .blocked { cursor: pointer; touch-action: manipulation; }
-        h2 { font-size: 1.2rem; }
-        .section-title { font-size: 1rem; }
-        button { padding: 6px 12px; font-size: 12px; }
-        .balance-area { font-size: 20px; }
+        th, td {
+            width: 12vw;
+            height: 12vw;
+            min-width: 40px;
+            min-height: 40px;
+            max-width: 60px;
+            max-height: 60px;
+            font-size: 4vw;
+        }
+        .hit, .miss, .dot {
+            font-size: 6vw;
+        }
+        .draw-row-cell {
+            font-size: 4vw;
+        }
+        th.axis {
+            font-size: 3.5vw;
+        }
+        .cell-default, .player-selected, .blocked {
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        h2 {
+            font-size: 1.2rem;
+        }
+        .section-title {
+            font-size: 1rem;
+        }
+        button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        .balance-area {
+            font-size: 20px;
+        }
     }
+    /* Desktop fine-tune (min 769px) */
     @media (min-width: 769px) {
-        th, td { width: 52px; height: 52px; font-size: 15px; }
-        .hit, .miss, .dot { font-size: 24px; }
-        .draw-row-cell { font-size: 17px; }
-        th.axis { font-size: 13px; }
+        th, td {
+            width: 52px;
+            height: 52px;
+            font-size: 15px;
+        }
+        .hit, .miss, .dot {
+            font-size: 24px;
+        }
+        .draw-row-cell {
+            font-size: 17px;
+        }
+        th.axis {
+            font-size: 13px;
+        }
     }
-    .cell-click-effect { animation: cellPop 0.12s ease-in-out !important; }
-    @keyframes cellPop { 0% { transform: scale(1); } 50% { transform: scale(0.92); background-color: #3a5a7a; } 100% { transform: scale(1); } }
-    .draw-appear { animation: drawReveal 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards; transform-origin: center; }
-    @keyframes drawReveal { 0% { opacity: 0; transform: scale(0.7); background-color: #1a2a3a; } 80% { transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); background-color: inherit; } }
-    .hit { background: #1b5e20 !important; color: white; font-weight: bold; text-shadow: 0 0 2px #000; animation: hitGlow 0.35s ease-out; }
-    @keyframes hitGlow { 0% { box-shadow: 0 0 0 0 #a5d6a7, inset 0 0 0 0 #c8e6c9; } 50% { box-shadow: 0 0 0 4px #a5d6a7, inset 0 0 0 2px #c8e6c9; } 100% { box-shadow: 0 0 0 0 #a5d6a7, inset 0 0 0 0 #c8e6c9; } }
-    .dot { background: #2c3e55 !important; color: #9fc9ff; font-weight: bold; text-shadow: 0 0 1px #fff; animation: fadeInDot 0.2s ease-out; }
-    @keyframes fadeInDot { 0% { opacity: 0; transform: scale(0.6); } 100% { opacity: 1; transform: scale(1); } }
-    .draw-row-cell { background: #0b111c; font-weight: bold; color: #eef4ff; }
-    .draw-hit { background: #2e7d32 !important; color: white; box-shadow: inset 0 0 0 2px #a5d6a7; font-weight: 800; }
-    .draw-miss { background: #b71c1c !important; color: #ffcdd2; }
-    .cell-default { background: #19212e; color: #cbd5ff; cursor: pointer; transition: all 0.08s linear; }
-    .player-selected { background: #4caf50 !important; color: white; font-weight: bold; box-shadow: inset 0 0 0 2px #c8e6c9; cursor: pointer; }
-    .blocked { background: #4a2e2e !important; color: #b0a0a0; cursor: not-allowed; opacity: 0.7; }
-    .miss { background: #8b2c2c !important; color: #ffcdd2; font-weight: bold; }
-    button { background: #2c3e66; border: none; padding: 8px 18px; border-radius: 40px; font-weight: bold; font-size: 14px; cursor: pointer; transition: all 0.2s ease; color: white; margin-right: 8px; margin-top: 8px; }
-    button:hover { filter: brightness(1.1); transform: scale(0.98); }
+
+    /* --- ANIMÁCIÓK --- */
+    .cell-click-effect {
+        animation: cellPop 0.12s ease-in-out !important;
+    }
+    @keyframes cellPop {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.92); background-color: #3a5a7a; }
+        100% { transform: scale(1); }
+    }
+    .draw-appear {
+        animation: drawReveal 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        transform-origin: center;
+    }
+    @keyframes drawReveal {
+        0% { opacity: 0; transform: scale(0.7); background-color: #1a2a3a; }
+        80% { transform: scale(1.05); }
+        100% { opacity: 1; transform: scale(1); background-color: inherit; }
+    }
+    .hit {
+        background: #1b5e20 !important;
+        color: white;
+        font-weight: bold;
+        text-shadow: 0 0 2px #000;
+        animation: hitGlow 0.35s ease-out;
+    }
+    @keyframes hitGlow {
+        0% { box-shadow: 0 0 0 0 #a5d6a7, inset 0 0 0 0 #c8e6c9; }
+        50% { box-shadow: 0 0 0 4px #a5d6a7, inset 0 0 0 2px #c8e6c9; }
+        100% { box-shadow: 0 0 0 0 #a5d6a7, inset 0 0 0 0 #c8e6c9; }
+    }
+    .dot {
+        background: #2c3e55 !important;
+        color: #9fc9ff;
+        font-weight: bold;
+        text-shadow: 0 0 1px #fff;
+        animation: fadeInDot 0.2s ease-out;
+    }
+    @keyframes fadeInDot {
+        0% { opacity: 0; transform: scale(0.6); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* --- STYLES --- */
+    .draw-row-cell {
+        background: #0b111c;
+        font-weight: bold;
+        color: #eef4ff;
+    }
+    .draw-hit {
+        background: #2e7d32 !important;
+        color: white;
+        box-shadow: inset 0 0 0 2px #a5d6a7;
+        font-weight: 800;
+    }
+    .draw-miss {
+        background: #b71c1c !important;
+        color: #ffcdd2;
+    }
+    .cell-default {
+        background: #19212e;
+        color: #cbd5ff;
+        cursor: pointer;
+        transition: all 0.08s linear;
+    }
+    .player-selected {
+        background: #4caf50 !important;
+        color: white;
+        font-weight: bold;
+        box-shadow: inset 0 0 0 2px #c8e6c9;
+        cursor: pointer;
+    }
+    .blocked {
+        background: #4a2e2e !important;
+        color: #b0a0a0;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    .miss {
+        background: #8b2c2c !important;
+        color: #ffcdd2;
+        font-weight: bold;
+    }
+    button {
+        background: #2c3e66;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 40px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: white;
+        margin-right: 8px;
+        margin-top: 8px;
+    }
+    button:hover {
+        filter: brightness(1.1);
+        transform: scale(0.98);
+    }
     #topUpBtn { background: #1f6d49; }
     #startDrawBtn { background: #0f6b8c; }
     #resetBtn { background: #aa2e2e; }
-    .bet-group { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 6px; }
-    .bet-group label { background: #1e2538; padding: 4px 12px; border-radius: 40px; cursor: pointer; font-weight: 600; }
-    .bet-group input { margin-right: 4px; }
-    .play-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
-    .play-row label { background: #1e2538; padding: 4px 12px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.1s; }
-    .play-row label:hover { background: #2f3b5c; }
-    #resultInfo { background: #0a0f1a; border-radius: 14px; padding: 10px; font-size: 12px; margin: 12px 0 5px; font-family: monospace; border-left: 3px solid #4caf50; }
-    .accordion-header { background: #1a2132; padding: 8px 12px; border-radius: 14px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
-    .accordion-content { display: none; background: #101520; border-radius: 14px; margin-top: 10px; padding: 6px; }
-    .accordion-content.show { display: block; }
-    #payoutTable { width: 100%; font-size: 11px; }
-    #payoutTable td, #payoutTable th { padding: 4px 2px; text-align: center; }
-    .balance-area { font-size: 24px; font-weight: bold; background: #00000040; display: inline-block; padding: 4px 16px; border-radius: 60px; margin-top: 6px; }
-    .info-line { font-size: 13px; margin: 6px 0; }
-    .section-title { font-size: 18px; margin-bottom: 10px; border-left: 3px solid #4caf50; padding-left: 10px; }
-    .draw-label { font-size: 11px; background: #00000066; border-radius: 20px; padding: 2px 8px; display: inline-block; }
-    .sound-toggle { position: fixed; bottom: 20px; right: 20px; background: #1e2538; border-radius: 40px; padding: 6px 12px; font-size: 12px; cursor: pointer; z-index: 1000; opacity: 0.8; }
-    .sound-toggle:hover { opacity: 1; }
+    .bet-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 10px 0 6px;
+    }
+    .bet-group label {
+        background: #1e2538;
+        padding: 4px 12px;
+        border-radius: 40px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    .bet-group input {
+        margin-right: 4px;
+    }
+    .play-row {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+    .play-row label {
+        background: #1e2538;
+        padding: 4px 12px;
+        border-radius: 40px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.1s;
+    }
+    .play-row label:hover {
+        background: #2f3b5c;
+    }
+    #resultInfo {
+        background: #0a0f1a;
+        border-radius: 14px;
+        padding: 10px;
+        font-size: 12px;
+        margin: 12px 0 5px;
+        font-family: monospace;
+        border-left: 3px solid #4caf50;
+    }
+    .accordion-header {
+        background: #1a2132;
+        padding: 8px 12px;
+        border-radius: 14px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+    }
+    .accordion-content {
+        display: none;
+        background: #101520;
+        border-radius: 14px;
+        margin-top: 10px;
+        padding: 6px;
+    }
+    .accordion-content.show {
+        display: block;
+    }
+    #payoutTable {
+        width: 100%;
+        font-size: 11px;
+    }
+    #payoutTable td, #payoutTable th {
+        padding: 4px 2px;
+        text-align: center;
+    }
+    .balance-area {
+        font-size: 24px;
+        font-weight: bold;
+        background: #00000040;
+        display: inline-block;
+        padding: 4px 16px;
+        border-radius: 60px;
+        margin-top: 6px;
+    }
+    .info-line {
+        font-size: 13px;
+        margin: 6px 0;
+    }
+    .section-title {
+        font-size: 18px;
+        margin-bottom: 10px;
+        border-left: 3px solid #4caf50;
+        padding-left: 10px;
+    }
+    .draw-label {
+        font-size: 11px;
+        background: #00000066;
+        border-radius: 20px;
+        padding: 2px 8px;
+        display: inline-block;
+    }
+    .sound-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #1e2538;
+        border-radius: 40px;
+        padding: 6px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        z-index: 1000;
+        opacity: 0.8;
+    }
+    .sound-toggle:hover {
+        opacity: 1;
+    }
 </style>
 </head>
 <body>
-<h2>🎯 DOZEN GAME – Simple Sound Edition</h2>
+<h2>🎯 DOZEN GAME – Animated + Sound Edition</h2>
 <div class="app-container">
     <div class="game-area">
         <div style="margin-bottom: 6px; display: flex; justify-content: space-between; flex-wrap: wrap;">
@@ -88,7 +370,7 @@
             <table id="unifiedGrid">
                 <thead id="gridHeader"></thead>
                 <tbody id="gridBody"></tbody>
-            </td>
+            </table>
         </div>
     </div>
 
@@ -98,6 +380,7 @@
             <div class="balance-area" id="balanceInfo">Balance: 0</div>
             <button id="topUpBtn">➕ Top‑up (+100)</button>
         </div>
+
         <div class="section-box">
             <div class="section-title">⚡ BET MULTIPLIER</div>
             <div class="bet-group">
@@ -109,15 +392,18 @@
             </div>
             <div class="info-line" id="betInfo">⚙️ Current bet: –</div>
         </div>
+
         <div class="section-box">
             <div class="section-title">🎯 PLAY TYPE (how many numbers)</div>
             <div id="playTypes"></div>
         </div>
+
         <div class="section-box">
             <button id="startDrawBtn">✨ START DRAW</button>
             <button id="resetBtn">🔄 RESET GAME</button>
             <div id="resultInfo">⚡ Play type: – | Hits: – | Accuracy: – | Payout: – | Win: –</div>
         </div>
+
         <div class="section-box">
             <div class="accordion-header" id="payoutHeader">
                 📜 PAYOUT TABLE <span id="arrow">▼</span>
@@ -131,6 +417,7 @@
         </div>
     </div>
 </div>
+
 <div class="sound-toggle" id="soundToggle">🔊 Sound ON</div>
 
 <script>
@@ -148,33 +435,98 @@
     let selectedCells = [];
     let currentPlayType = null;
     let currentBetMultiplier = null;
+
+    // --- SOUND SYSTEM ---
+    let audioCtx = null;
     let soundEnabled = true;
 
-    // EGYSZERŰ HANGOK (HTMLAudioElement)
-    function playSimpleSound(type) {
-        if (!soundEnabled) return;
-        let audio = new Audio();
-        switch(type) {
-            case 'click':
-                audio = new Audio("data:audio/wav;base64,U3RlYWx0aCBzb3VuZCBub3QgYXZhaWxhYmxl");
-                break;
-            case 'hit':
-                audio = new Audio("data:audio/wav;base64,U3RlYWx0aCBzb3VuZCBub3QgYXZhaWxhYmxl");
-                break;
-            case 'miss':
-                audio = new Audio("data:audio/wav;base64,U3RlYWx0aCBzb3VuZCBub3QgYXZhaWxhYmxl");
-                break;
-            case 'fanfare':
-                audio = new Audio("data:audio/wav;base64,U3RlYWx0aCBzb3VuZCBub3QgYXZhaWxhYmxl");
-                break;
-            case 'sad':
-                audio = new Audio("data:audio/wav;base64,U3RlYWx0aCBzb3VuZCBub3QgYXZhaWxhYmxl");
-                break;
-            default: return;
-        }
-        audio.play().catch(e => console.log("Audio play failed", e));
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
 
+    function playSound(type) {
+        if (!soundEnabled) return;
+        if (!audioCtx) initAudio();
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume().then(() => {
+                generateSound(type);
+            }).catch(e => console.log("Audio resume failed", e));
+        } else {
+            generateSound(type);
+        }
+    }
+
+    function generateSound(type) {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        switch(type) {
+            case 'click':
+                const oscClick = audioCtx.createOscillator();
+                const gainClick = audioCtx.createGain();
+                oscClick.connect(gainClick);
+                gainClick.connect(audioCtx.destination);
+                oscClick.frequency.value = 800;
+                gainClick.gain.setValueAtTime(0.15, now);
+                gainClick.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+                oscClick.start(now);
+                oscClick.stop(now + 0.05);
+                break;
+            case 'hit':
+                const oscHit = audioCtx.createOscillator();
+                const gainHit = audioCtx.createGain();
+                oscHit.connect(gainHit);
+                gainHit.connect(audioCtx.destination);
+                oscHit.frequency.setValueAtTime(1200, now);
+                oscHit.frequency.exponentialRampToValueAtTime(1500, now + 0.15);
+                gainHit.gain.setValueAtTime(0.25, now);
+                gainHit.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+                oscHit.start(now);
+                oscHit.stop(now + 0.2);
+                break;
+            case 'miss':
+                const oscMiss = audioCtx.createOscillator();
+                const gainMiss = audioCtx.createGain();
+                oscMiss.connect(gainMiss);
+                gainMiss.connect(audioCtx.destination);
+                oscMiss.frequency.value = 200;
+                gainMiss.gain.setValueAtTime(0.2, now);
+                gainMiss.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+                oscMiss.start(now);
+                oscMiss.stop(now + 0.1);
+                break;
+            case 'fanfare':
+                const notes = [523, 659, 784];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.2, now + idx * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.1 + 0.2);
+                    osc.start(now + idx * 0.1);
+                    osc.stop(now + idx * 0.1 + 0.2);
+                });
+                break;
+            case 'sad':
+                // sad descending "búú" sound
+                const oscSad = audioCtx.createOscillator();
+                const gainSad = audioCtx.createGain();
+                oscSad.connect(gainSad);
+                gainSad.connect(audioCtx.destination);
+                oscSad.frequency.setValueAtTime(400, now);
+                oscSad.frequency.exponentialRampToValueAtTime(200, now + 0.6);
+                gainSad.gain.setValueAtTime(0.2, now);
+                gainSad.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+                oscSad.start(now);
+                oscSad.stop(now + 0.7);
+                break;
+            default: break;
+        }
+    }
+
+    // DOM elements
     const gridBody = document.getElementById("gridBody");
     const gridHeader = document.getElementById("gridHeader");
     const balanceDiv = document.getElementById("balanceInfo");
@@ -261,10 +613,12 @@
     function onNumberCellClick(event) {
         const td = event.currentTarget;
         if (td.classList.contains("blocked") || td.classList.contains("hit") || td.classList.contains("miss")) return;
-        playSimpleSound('click');
+        initAudio();
+        playSound('click');
         const pt = getSelectedPlayType();
         if (!pt) { alert("Please select a Play Type first."); return; }
         animateCellClick(td);
+
         if (td.classList.contains("player-selected")) {
             td.classList.remove("player-selected");
             td.classList.add("cell-default");
@@ -355,22 +709,26 @@
         if (selectedCells.length !== playType) { alert(`You must select exactly ${playType} numbers.`); return; }
         const betAmount = betMult;
         if (balance < betAmount) {
-            playSimpleSound('sad');
+            playSound('sad');
             alert("Insufficient balance. Please top up.");
             return;
         }
         balance -= betAmount;
         updateBalanceUI();
+
         const numbers = Array.from({length:SIZE}, (_,i)=>i+1);
         for (let i=numbers.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [numbers[i],numbers[j]]=[numbers[j],numbers[i]]; }
         const drawnResults = [...numbers];
+
         document.querySelectorAll("#gridBody tr:not(.draw-row) td").forEach(td => {
             if (td.classList.contains("player-selected")) { td.classList.remove("hit","miss","dot"); td.innerHTML = ""; }
             else { td.classList.remove("hit","miss","dot","player-selected"); td.classList.add("cell-default"); td.innerHTML = ""; }
             td.classList.remove("blocked");
         });
+
         const drawRowCells = document.querySelectorAll("#gridBody tr.draw-row td");
         drawRowCells.forEach(td => { td.textContent = ""; td.classList.remove("draw-hit","draw-miss","draw-appear"); });
+
         let hits = 0;
         selectedCells.forEach(cell => {
             const selectedNumber = parseInt(cell.dataset.number,10);
@@ -381,18 +739,19 @@
                 cell.classList.add("hit");
                 cell.innerHTML = selectedNumber;
                 hits++;
-                playSimpleSound('hit');
+                playSound('hit');
                 const drawCell = document.getElementById(`draw-cell-${drawPos}`);
                 if (drawCell) { drawCell.textContent = resultValue; drawCell.classList.remove("draw-miss"); drawCell.classList.add("draw-hit"); }
             } else {
                 cell.classList.remove("player-selected","cell-default");
                 cell.classList.add("miss");
                 cell.innerHTML = selectedNumber;
-                playSimpleSound('miss');
+                playSound('miss');
                 const drawCell = document.getElementById(`draw-cell-${drawPos}`);
                 if (drawCell) { drawCell.textContent = resultValue; drawCell.classList.remove("draw-hit"); drawCell.classList.add("draw-miss"); }
             }
         });
+
         for (let i=1; i<=SIZE; i++) {
             const drawCell = document.getElementById(`draw-cell-${i}`);
             if (drawCell && drawCell.textContent === "") { drawCell.textContent = drawnResults[i-1]; if (!drawCell.classList.contains("draw-hit") && !drawCell.classList.contains("draw-miss")) drawCell.classList.add("draw-row-cell"); }
@@ -403,8 +762,10 @@
                 drawCell.style.animationDelay = `${(i-1) * 0.04}s`;
             }
         }
+
         applyDotMarkers(drawnResults);
-        playSimpleSound('fanfare');
+        playSound('fanfare');
+
         const accuracy = (hits/playType)*100;
         const payoutMultiplier = payoutTable[playType]?.[hits] || 0;
         const winAmount = payoutMultiplier * betAmount;
@@ -473,6 +834,10 @@
     initBetMultipliers();
     updateBalanceUI();
     resetBoard(false);
+
+    document.body.addEventListener('click', () => {
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    }, { once: true });
 </script>
 </body>
 </html>
