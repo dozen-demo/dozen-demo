@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Dozen Demo</title>
+<title>Dozen Demo – Animated + Sound</title>
 <style>
     * {
         box-sizing: border-box;
@@ -143,8 +143,6 @@
     }
 
     /* --- ANIMÁCIÓK --- */
-
-    /* 1. Kattintás animáció (pulzálás) */
     .cell-click-effect {
         animation: cellPop 0.12s ease-in-out !important;
     }
@@ -153,8 +151,6 @@
         50% { transform: scale(0.92); background-color: #3a5a7a; }
         100% { transform: scale(1); }
     }
-
-    /* 2. SORSOLÁS: DRAW cellák egymás utáni megjelenése */
     .draw-appear {
         animation: drawReveal 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
         transform-origin: center;
@@ -164,8 +160,6 @@
         80% { transform: scale(1.05); }
         100% { opacity: 1; transform: scale(1); background-color: inherit; }
     }
-
-    /* 3. Találat (hit) pulzáló glow effekt */
     .hit {
         background: #1b5e20 !important;
         color: white;
@@ -178,8 +172,6 @@
         50% { box-shadow: 0 0 0 4px #a5d6a7, inset 0 0 0 2px #c8e6c9; }
         100% { box-shadow: 0 0 0 0 #a5d6a7, inset 0 0 0 0 #c8e6c9; }
     }
-
-    /* 4. Pontok (dot) fade-in megjelenése */
     .dot {
         background: #2c3e55 !important;
         color: #9fc9ff;
@@ -192,26 +184,7 @@
         100% { opacity: 1; transform: scale(1); }
     }
 
-    /* Gomb hover már volt, de enyhe javítás */
-    button {
-        background: #2c3e66;
-        border: none;
-        padding: 8px 18px;
-        border-radius: 40px;
-        font-weight: bold;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        color: white;
-        margin-right: 8px;
-        margin-top: 8px;
-    }
-    button:hover {
-        filter: brightness(1.1);
-        transform: scale(0.98);
-    }
-
-    /* További stílusok változatlanok */
+    /* --- STYLES --- */
     .draw-row-cell {
         background: #0b111c;
         font-weight: bold;
@@ -251,6 +224,26 @@
         color: #ffcdd2;
         font-weight: bold;
     }
+    button {
+        background: #2c3e66;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 40px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: white;
+        margin-right: 8px;
+        margin-top: 8px;
+    }
+    button:hover {
+        filter: brightness(1.1);
+        transform: scale(0.98);
+    }
+    #topUpBtn { background: #1f6d49; }
+    #startDrawBtn { background: #0f6b8c; }
+    #resetBtn { background: #aa2e2e; }
     .bet-group {
         display: flex;
         gap: 10px;
@@ -347,15 +340,30 @@
         padding: 2px 8px;
         display: inline-block;
     }
+    .sound-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #1e2538;
+        border-radius: 40px;
+        padding: 6px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        z-index: 1000;
+        opacity: 0.8;
+    }
+    .sound-toggle:hover {
+        opacity: 1;
+    }
 </style>
 </head>
 <body>
-<h2>🎯 DOZEN GAME</h2>
+<h2>🎯 DOZEN GAME – Animated + Sound Edition</h2>
 <div class="app-container">
     <div class="game-area">
         <div style="margin-bottom: 6px; display: flex; justify-content: space-between; flex-wrap: wrap;">
             <span class="draw-label">🎯 DRAW + 12x12 BOARD</span>
-            <span class="draw-label">✔️ tap → select | 🟢 hit | 🔴 miss | ● dot</span>
+            <span class="draw-label">✔️ tap → select | 🟢 hit (🔊) | 🔴 miss (🔊) | ● dot</span>
         </div>
         <div style="overflow-x: auto;">
             <table id="unifiedGrid">
@@ -409,17 +417,14 @@
     </div>
 </div>
 
+<div class="sound-toggle" id="soundToggle">🔊 Sound ON</div>
+
 <script>
     const SIZE = 12;
     const payoutTable = {
-        1:{0:0,1:10},
-        2:{0:0,1:0,2:35},
-        3:{0:0,1:0,2:6,3:300},
-        4:{0:0,1:0,2:4,3:40,4:1200},
-        5:{0:0,1:0,2:3,3:25,4:250,5:6000},
-        6:{0:0,1:0,2:2,3:15,4:150,5:2500,6:50000},
-        7:{0:0,1:0,2:2,3:10,4:100,5:1200,6:15000,7:120000},
-        8:{0:0,1:0,2:2,3:8,4:70,5:700,6:7000,7:70000,8:220000},
+        1:{0:0,1:10},2:{0:0,1:0,2:35},3:{0:0,1:0,2:6,3:300},4:{0:0,1:0,2:4,3:40,4:1200},
+        5:{0:0,1:0,2:3,3:25,4:250,5:6000},6:{0:0,1:0,2:2,3:15,4:150,5:2500,6:50000},
+        7:{0:0,1:0,2:2,3:10,4:100,5:1200,6:15000,7:120000},8:{0:0,1:0,2:2,3:8,4:70,5:700,6:7000,7:70000,8:220000},
         9:{0:0,1:0,2:1,3:7,4:50,5:500,6:4000,7:40000,8:180000,9:350000},
         10:{0:0,1:0,2:1,3:6,4:40,5:400,6:3500,7:35000,8:140000,9:300000,10:500000},
         11:{0:0,1:0,2:1,3:4,4:20,5:80,6:400,7:2500,8:20000,9:80000,10:200000,11:1000000}
@@ -430,6 +435,89 @@
     let currentPlayType = null;
     let currentBetMultiplier = null;
 
+    // --- SOUND SYSTEM ---
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // start suspended - will resume on first user interaction
+    }
+
+    function playSound(type) {
+        if (!soundEnabled) return;
+        if (!audioCtx) initAudio();
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume().then(() => {
+                generateSound(type);
+            }).catch(e => console.log("Audio resume failed", e));
+        } else {
+            generateSound(type);
+        }
+    }
+
+    function generateSound(type) {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        switch(type) {
+            case 'click':
+                // short click (800Hz, 0.05s)
+                const oscClick = audioCtx.createOscillator();
+                const gainClick = audioCtx.createGain();
+                oscClick.connect(gainClick);
+                gainClick.connect(audioCtx.destination);
+                oscClick.frequency.value = 800;
+                gainClick.gain.setValueAtTime(0.15, now);
+                gainClick.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+                oscClick.start(now);
+                oscClick.stop(now + 0.05);
+                break;
+            case 'hit':
+                // positive chime: 1200Hz -> 1500Hz sweep
+                const oscHit = audioCtx.createOscillator();
+                const gainHit = audioCtx.createGain();
+                oscHit.connect(gainHit);
+                gainHit.connect(audioCtx.destination);
+                oscHit.frequency.setValueAtTime(1200, now);
+                oscHit.frequency.exponentialRampToValueAtTime(1500, now + 0.15);
+                gainHit.gain.setValueAtTime(0.25, now);
+                gainHit.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+                oscHit.start(now);
+                oscHit.stop(now + 0.2);
+                break;
+            case 'miss':
+                // low "puff": 200Hz, short
+                const oscMiss = audioCtx.createOscillator();
+                const gainMiss = audioCtx.createGain();
+                oscMiss.connect(gainMiss);
+                gainMiss.connect(audioCtx.destination);
+                oscMiss.frequency.value = 200;
+                gainMiss.gain.setValueAtTime(0.2, now);
+                gainMiss.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+                oscMiss.start(now);
+                oscMiss.stop(now + 0.1);
+                break;
+            case 'fanfare':
+                // three notes: C E G (523, 659, 784)
+                const notes = [523, 659, 784];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.2, now + idx * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.1 + 0.2);
+                    osc.start(now + idx * 0.1);
+                    osc.stop(now + idx * 0.1 + 0.2);
+                });
+                break;
+            default: break;
+        }
+    }
+
+    // DOM elements
     const gridBody = document.getElementById("gridBody");
     const gridHeader = document.getElementById("gridHeader");
     const balanceDiv = document.getElementById("balanceInfo");
@@ -440,16 +528,21 @@
     const resultInfoDiv = document.getElementById("resultInfo");
     const playTypesDiv = document.getElementById("playTypes");
     const payoutTbody = document.querySelector("#payoutTable tbody");
+    const soundToggle = document.getElementById("soundToggle");
+
+    soundToggle.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        soundToggle.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF";
+    });
 
     function updateBalanceUI() { balanceDiv.textContent = `Balance: ${balance}`; }
     function getSelectedPlayType() { const c = document.querySelector("input[name='playType']:checked"); return c ? parseInt(c.value,10) : null; }
     function getSelectedBetMultiplier() { const c = document.querySelector("input[name='betMult']:checked"); return c ? parseInt(c.value,10) : null; }
 
-    // Kattintás animáció a cellákhoz
     function animateCellClick(cell) {
         if (!cell) return;
         cell.classList.remove('cell-click-effect');
-        void cell.offsetWidth; // force reflow
+        void cell.offsetWidth;
         cell.classList.add('cell-click-effect');
         setTimeout(() => { cell.classList.remove('cell-click-effect'); }, 150);
     }
@@ -511,9 +604,10 @@
     function onNumberCellClick(event) {
         const td = event.currentTarget;
         if (td.classList.contains("blocked") || td.classList.contains("hit") || td.classList.contains("miss")) return;
+        initAudio(); // ensure audio context exists
+        playSound('click');
         const pt = getSelectedPlayType();
         if (!pt) { alert("Please select a Play Type first."); return; }
-        // Kattintási animáció
         animateCellClick(td);
 
         if (td.classList.contains("player-selected")) {
@@ -594,7 +688,6 @@
                 targetCell.classList.remove("cell-default","blocked");
                 targetCell.classList.add("dot");
                 targetCell.innerHTML = "●";
-                // fade-in már a CSS-ben benne van (animation)
             }
         }
     }
@@ -609,6 +702,7 @@
         if (balance < betAmount) { alert("Insufficient balance. Please top up."); return; }
         balance -= betAmount;
         updateBalanceUI();
+
         const numbers = Array.from({length:SIZE}, (_,i)=>i+1);
         for (let i=numbers.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [numbers[i],numbers[j]]=[numbers[j],numbers[i]]; }
         const drawnResults = [...numbers];
@@ -619,12 +713,8 @@
             td.classList.remove("blocked");
         });
 
-        // Clear draw row
         const drawRowCells = document.querySelectorAll("#gridBody tr.draw-row td");
-        drawRowCells.forEach(td => {
-            td.textContent = "";
-            td.classList.remove("draw-hit","draw-miss","draw-appear");
-        });
+        drawRowCells.forEach(td => { td.textContent = ""; td.classList.remove("draw-hit","draw-miss","draw-appear"); });
 
         let hits = 0;
         selectedCells.forEach(cell => {
@@ -636,27 +726,22 @@
                 cell.classList.add("hit");
                 cell.innerHTML = selectedNumber;
                 hits++;
+                playSound('hit');
                 const drawCell = document.getElementById(`draw-cell-${drawPos}`);
                 if (drawCell) { drawCell.textContent = resultValue; drawCell.classList.remove("draw-miss"); drawCell.classList.add("draw-hit"); }
             } else {
                 cell.classList.remove("player-selected","cell-default");
                 cell.classList.add("miss");
                 cell.innerHTML = selectedNumber;
+                playSound('miss');
                 const drawCell = document.getElementById(`draw-cell-${drawPos}`);
                 if (drawCell) { drawCell.textContent = resultValue; drawCell.classList.remove("draw-hit"); drawCell.classList.add("draw-miss"); }
             }
         });
 
-        // DRAW oszlopok feltöltése és animáció (stagger)
         for (let i=1; i<=SIZE; i++) {
             const drawCell = document.getElementById(`draw-cell-${i}`);
-            if (drawCell && drawCell.textContent === "") {
-                drawCell.textContent = drawnResults[i-1];
-                if (!drawCell.classList.contains("draw-hit") && !drawCell.classList.contains("draw-miss")) {
-                    drawCell.classList.add("draw-row-cell");
-                }
-            }
-            // Animáció hozzáadása minden draw cellához balról jobbra
+            if (drawCell && drawCell.textContent === "") { drawCell.textContent = drawnResults[i-1]; if (!drawCell.classList.contains("draw-hit") && !drawCell.classList.contains("draw-miss")) drawCell.classList.add("draw-row-cell"); }
             if (drawCell) {
                 drawCell.classList.remove("draw-appear");
                 void drawCell.offsetWidth;
@@ -666,6 +751,7 @@
         }
 
         applyDotMarkers(drawnResults);
+        playSound('fanfare');
 
         const accuracy = (hits/playType)*100;
         const payoutMultiplier = payoutTable[playType]?.[hits] || 0;
@@ -735,6 +821,11 @@
     initBetMultipliers();
     updateBalanceUI();
     resetBoard(false);
+
+    // init audio on first user click anywhere (optional)
+    document.body.addEventListener('click', () => {
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    }, { once: true });
 </script>
 </body>
 </html>
