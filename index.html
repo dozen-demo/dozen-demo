@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -510,7 +509,6 @@
                 });
                 break;
             case 'sad':
-                // sad descending "búú" sound
                 const oscSad = audioCtx.createOscillator();
                 const gainSad = audioCtx.createGain();
                 oscSad.connect(gainSad);
@@ -769,7 +767,16 @@
         const accuracy = (hits/playType)*100;
         const payoutMultiplier = payoutTable[playType]?.[hits] || 0;
         const winAmount = payoutMultiplier * betAmount;
-        if (winAmount > 0) { balance += winAmount; updateBalanceUI(); }
+        if (winAmount > 0) {
+            balance += winAmount;
+            updateBalanceUI();
+        }
+
+        // Szomorú hang csak akkor, ha a végső egyenleg nulla (azaz nem nyert semmit és elfogyott a pénz)
+        if (balance === 0) {
+            playSound('sad');
+        }
+
         resultInfoDiv.innerHTML = `🎯 Play type: ${playType} | 🎯 Hits: ${hits} | 📊 Accuracy: ${accuracy.toFixed(2)}% | 💰 Payout: ${payoutMultiplier}x | 💎 Win: ${winAmount}`;
         rebuildBlocking();
     }
