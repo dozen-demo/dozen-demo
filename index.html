@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Dozen Demo – Floating Payout Table with Color Blocks</title>
+<title>Dozen Demo – Floating Payout Table with Rules</title>
 <style>
     * {
         box-sizing: border-box;
@@ -314,7 +314,7 @@
         display: inline-block;
     }
     /* Floating elements */
-    .sound-toggle, .payout-toggle {
+    .sound-toggle, .payout-toggle, .rules-toggle {
         position: fixed;
         bottom: 20px;
         background: #1e2538;
@@ -329,10 +329,14 @@
         right: 20px;
     }
     .payout-toggle {
-        right: 110px; /* next to sound toggle */
+        right: 110px;
         background: #4c6e8c;
     }
-    .sound-toggle:hover, .payout-toggle:hover {
+    .rules-toggle {
+        right: 200px;
+        background: #2c3e66;
+    }
+    .sound-toggle:hover, .payout-toggle:hover, .rules-toggle:hover {
         opacity: 1;
     }
     /* Modal overlay */
@@ -343,7 +347,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.8);
+        background: rgba(0,0,0,0.85);
         z-index: 2000;
         justify-content: center;
         align-items: center;
@@ -351,11 +355,22 @@
     .modal-content {
         background: #121826;
         border-radius: 20px;
-        padding: 16px;
+        padding: 20px;
         max-width: 90%;
         max-height: 80%;
         overflow: auto;
         border: 1px solid #2a2f3f;
+    }
+    .modal-content h3 {
+        margin-top: 0;
+        margin-bottom: 16px;
+    }
+    .modal-content p, .modal-content li {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    .modal-content ul {
+        padding-left: 20px;
     }
     .modal-content table {
         font-size: 12px;
@@ -431,17 +446,37 @@
 
 <div class="sound-toggle" id="soundToggle">🔊 Sound ON</div>
 <div class="payout-toggle" id="payoutToggle">📜 PAYOUT TABLE</div>
+<div class="rules-toggle" id="rulesToggle">📖 GAME RULES</div>
 
-<!-- Modal for payout table -->
+<!-- Modal for Game Rules (auto-open on load) -->
+<div id="rulesModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" id="closeRulesModal">&times;</span>
+        <h3>📖 Dozen Game Rules</h3>
+        <ul>
+            <li>The game is played on a <strong>12×12 grid</strong>. Each cell represents a number (1–12) and a draw position (1st draw, 2nd draw, …, 12th draw).</li>
+            <li><strong>Play Type:</strong> Choose how many numbers you want to select (1 to 11). This is your "play type".</li>
+            <li><strong>Select a Bet Multiplier:</strong> Choose 1×, 2×, 3×, 4× or 5× – your total stake.</li>
+            <li><strong>Select your numbers:</strong> Tap on cells to select numbers. The selected number will appear in the cell. You must select exactly as many numbers as your Play Type.</li>
+            <li><strong>Start Draw:</strong> Click START DRAW. The system randomly generates 12 numbers – one for each draw position.</li>
+            <li><strong>Winning:</strong> You win if the number you selected matches the drawn number in that exact draw position. The more hits, the higher the payout multiplier.</li>
+            <li><strong>Payout Table:</strong> Click the floating 📜 PAYOUT TABLE button to see all multipliers.</li>
+            <li><strong>Balance:</strong> Your balance starts at 0. Use Top‑up to add credits. If your balance reaches zero, a sad sound will play.</li>
+        </ul>
+        <p style="margin-top: 10px;">Good luck and have fun! 🍀</p>
+    </div>
+</div>
+
+<!-- Modal for Payout Table -->
 <div id="payoutModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal">&times;</span>
+        <span class="close-modal" id="closePayoutModal">&times;</span>
         <h3 style="margin-top:0">Payout Table</h3>
         <div style="overflow-x: auto;">
             <table id="modalPayoutTable" style="width:100%">
                 <thead><tr><th>Play</th><th>Hits</th><th>Multiplier</th></tr></thead>
                 <tbody></tbody>
-            </table>
+            <tr>
         </div>
     </div>
 </div>
@@ -563,9 +598,12 @@
     const playTypesDiv = document.getElementById("playTypes");
     const soundToggle = document.getElementById("soundToggle");
     const payoutToggle = document.getElementById("payoutToggle");
-    const modal = document.getElementById("payoutModal");
-    const modalBody = document.querySelector("#modalPayoutTable tbody");
-    const closeModal = document.querySelector(".close-modal");
+    const rulesToggle = document.getElementById("rulesToggle");
+    const rulesModal = document.getElementById("rulesModal");
+    const payoutModal = document.getElementById("payoutModal");
+    const modalPayoutBody = document.querySelector("#modalPayoutTable tbody");
+    const closeRules = document.getElementById("closeRulesModal");
+    const closePayout = document.getElementById("closePayoutModal");
 
     soundToggle.addEventListener("click", () => {
         soundEnabled = !soundEnabled;
@@ -577,10 +615,10 @@
         return num.toLocaleString('en-US');
     }
 
-    // Modal open with alternating background colors for each play type
+    // Payout modal open with alternating colors
     payoutToggle.addEventListener("click", () => {
-        modalBody.innerHTML = "";
-        let colorToggle = false; // false = dark, true = light
+        modalPayoutBody.innerHTML = "";
+        let colorToggle = false;
         for (let p = 1; p <= 11; p++) {
             const rows = [];
             for (let hitsKey in payoutTable[p]) {
@@ -589,20 +627,30 @@
                 tr.innerHTML = `<td>${p}</td><td>${hitsKey}</td><td>${formatNumber(multiplier)}</td>`;
                 rows.push(tr);
             }
-            // Apply background class to all rows of this play type
             const bgClass = colorToggle ? "payout-group-light" : "payout-group-dark";
             rows.forEach(row => row.classList.add(bgClass));
-            rows.forEach(row => modalBody.appendChild(row));
-            colorToggle = !colorToggle; // switch for next play type
+            rows.forEach(row => modalPayoutBody.appendChild(row));
+            colorToggle = !colorToggle;
         }
-        modal.style.display = "flex";
+        payoutModal.style.display = "flex";
     });
 
-    closeModal.addEventListener("click", () => {
-        modal.style.display = "none";
+    // Rules modal open (manually)
+    rulesToggle.addEventListener("click", () => {
+        rulesModal.style.display = "flex";
     });
+
+    // Close modals
+    closeRules.addEventListener("click", () => { rulesModal.style.display = "none"; });
+    closePayout.addEventListener("click", () => { payoutModal.style.display = "none"; });
     window.addEventListener("click", (e) => {
-        if (e.target === modal) modal.style.display = "none";
+        if (e.target === rulesModal) rulesModal.style.display = "none";
+        if (e.target === payoutModal) payoutModal.style.display = "none";
+    });
+
+    // Auto-show rules modal on page load (once)
+    window.addEventListener("load", () => {
+        rulesModal.style.display = "flex";
     });
 
     function updateBalanceUI() {
