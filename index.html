@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Dozen Demo – Animated + Sound</title>
+<title>Dozen Demo – Floating Payout Table with Color Blocks</title>
 <style>
     * {
         box-sizing: border-box;
@@ -287,33 +287,6 @@
         font-family: monospace;
         border-left: 3px solid #4caf50;
     }
-    .accordion-header {
-        background: #1a2132;
-        padding: 8px 12px;
-        border-radius: 14px;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        font-weight: bold;
-    }
-    .accordion-content {
-        display: none;
-        background: #101520;
-        border-radius: 14px;
-        margin-top: 10px;
-        padding: 6px;
-    }
-    .accordion-content.show {
-        display: block;
-    }
-    #payoutTable {
-        width: 100%;
-        font-size: 11px;
-    }
-    #payoutTable td, #payoutTable th {
-        padding: 4px 2px;
-        text-align: center;
-    }
     .balance-area {
         font-size: 24px;
         font-weight: bold;
@@ -340,10 +313,10 @@
         padding: 2px 8px;
         display: inline-block;
     }
-    .sound-toggle {
+    /* Floating elements */
+    .sound-toggle, .payout-toggle {
         position: fixed;
         bottom: 20px;
-        right: 20px;
         background: #1e2538;
         border-radius: 40px;
         padding: 6px 12px;
@@ -352,13 +325,64 @@
         z-index: 1000;
         opacity: 0.8;
     }
-    .sound-toggle:hover {
+    .sound-toggle {
+        right: 20px;
+    }
+    .payout-toggle {
+        right: 110px; /* next to sound toggle */
+        background: #4c6e8c;
+    }
+    .sound-toggle:hover, .payout-toggle:hover {
         opacity: 1;
+    }
+    /* Modal overlay */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: #121826;
+        border-radius: 20px;
+        padding: 16px;
+        max-width: 90%;
+        max-height: 80%;
+        overflow: auto;
+        border: 1px solid #2a2f3f;
+    }
+    .modal-content table {
+        font-size: 12px;
+        width: 100%;
+    }
+    .modal-content td, .modal-content th {
+        padding: 6px 8px;
+    }
+    .close-modal {
+        float: right;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #eef4ff;
+        margin-bottom: 10px;
+    }
+    /* Alternating play type background colors in modal */
+    .payout-group-dark {
+        background-color: #1a1f2c;
+    }
+    .payout-group-light {
+        background-color: #121826;
     }
 </style>
 </head>
 <body>
-<h2>🎯 DOZEN GAME – Animated + Sound Edition</h2>
+<h2>🎯 DOZEN GAME – Floating Payout Table</h2>
 <div class="app-container">
     <div class="game-area">
         <div style="margin-bottom: 6px; display: flex; justify-content: space-between; flex-wrap: wrap;">
@@ -402,22 +426,25 @@
             <button id="resetBtn">🔄 RESET GAME</button>
             <div id="resultInfo">⚡ Play type: – | Hits: – | Accuracy: – | Payout: – | Win: –</div>
         </div>
-
-        <div class="section-box">
-            <div class="accordion-header" id="payoutHeader">
-                📜 PAYOUT TABLE <span id="arrow">▼</span>
-            </div>
-            <div class="accordion-content" id="payoutContent">
-                <table id="payoutTable" style="width:100%">
-                    <thead><tr><th>Play</th><th>Hits</th><th>Multiplier</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
     </div>
 </div>
 
 <div class="sound-toggle" id="soundToggle">🔊 Sound ON</div>
+<div class="payout-toggle" id="payoutToggle">📜 PAYOUT TABLE</div>
+
+<!-- Modal for payout table -->
+<div id="payoutModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h3 style="margin-top:0">Payout Table</h3>
+        <div style="overflow-x: auto;">
+            <table id="modalPayoutTable" style="width:100%">
+                <thead><tr><th>Play</th><th>Hits</th><th>Multiplier</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <script>
     const SIZE = 12;
@@ -534,15 +561,53 @@
     const betInfoSpan = document.getElementById("betInfo");
     const resultInfoDiv = document.getElementById("resultInfo");
     const playTypesDiv = document.getElementById("playTypes");
-    const payoutTbody = document.querySelector("#payoutTable tbody");
     const soundToggle = document.getElementById("soundToggle");
+    const payoutToggle = document.getElementById("payoutToggle");
+    const modal = document.getElementById("payoutModal");
+    const modalBody = document.querySelector("#modalPayoutTable tbody");
+    const closeModal = document.querySelector(".close-modal");
 
     soundToggle.addEventListener("click", () => {
         soundEnabled = !soundEnabled;
         soundToggle.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF";
     });
 
-    function updateBalanceUI() { balanceDiv.textContent = `Balance: ${balance}`; }
+    // Helper: format number with commas (en-US style)
+    function formatNumber(num) {
+        return num.toLocaleString('en-US');
+    }
+
+    // Modal open with alternating background colors for each play type
+    payoutToggle.addEventListener("click", () => {
+        modalBody.innerHTML = "";
+        let colorToggle = false; // false = dark, true = light
+        for (let p = 1; p <= 11; p++) {
+            const rows = [];
+            for (let hitsKey in payoutTable[p]) {
+                const tr = document.createElement("tr");
+                const multiplier = payoutTable[p][hitsKey];
+                tr.innerHTML = `<td>${p}</td><td>${hitsKey}</td><td>${formatNumber(multiplier)}</td>`;
+                rows.push(tr);
+            }
+            // Apply background class to all rows of this play type
+            const bgClass = colorToggle ? "payout-group-light" : "payout-group-dark";
+            rows.forEach(row => row.classList.add(bgClass));
+            rows.forEach(row => modalBody.appendChild(row));
+            colorToggle = !colorToggle; // switch for next play type
+        }
+        modal.style.display = "flex";
+    });
+
+    closeModal.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+    window.addEventListener("click", (e) => {
+        if (e.target === modal) modal.style.display = "none";
+    });
+
+    function updateBalanceUI() {
+        balanceDiv.textContent = `Balance: ${formatNumber(balance)}`;
+    }
     function getSelectedPlayType() { const c = document.querySelector("input[name='playType']:checked"); return c ? parseInt(c.value,10) : null; }
     function getSelectedBetMultiplier() { const c = document.querySelector("input[name='betMult']:checked"); return c ? parseInt(c.value,10) : null; }
 
@@ -772,12 +837,11 @@
             updateBalanceUI();
         }
 
-        // Szomorú hang csak akkor, ha a végső egyenleg nulla (azaz nem nyert semmit és elfogyott a pénz)
         if (balance === 0) {
             playSound('sad');
         }
 
-        resultInfoDiv.innerHTML = `🎯 Play type: ${playType} | 🎯 Hits: ${hits} | 📊 Accuracy: ${accuracy.toFixed(2)}% | 💰 Payout: ${payoutMultiplier}x | 💎 Win: ${winAmount}`;
+        resultInfoDiv.innerHTML = `🎯 Play type: ${playType} | 🎯 Hits: ${hits} | 📊 Accuracy: ${accuracy.toFixed(2)}% | 💰 Payout: ${formatNumber(payoutMultiplier)}x | 💎 Win: ${formatNumber(winAmount)}`;
         rebuildBlocking();
     }
 
@@ -815,29 +879,12 @@
         });
     }
 
-    function buildPayoutTable() {
-        payoutTbody.innerHTML = "";
-        for (let p=1; p<=11; p++) {
-            for (let hitsKey in payoutTable[p]) {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${p}</td><td>${hitsKey}</td><td>${payoutTable[p][hitsKey]}</td>`;
-                payoutTbody.appendChild(tr);
-            }
-        }
-    }
-
-    document.getElementById("payoutHeader").addEventListener("click", () => {
-        const content = document.getElementById("payoutContent");
-        content.classList.toggle("show");
-        document.getElementById("arrow").textContent = content.classList.contains("show") ? "▲" : "▼";
-    });
     topUpBtn.addEventListener("click", () => { balance += 100; updateBalanceUI(); });
     startDrawBtn.addEventListener("click", startDraw);
     resetBtn.addEventListener("click", () => resetBoard(false));
 
     buildUnifiedGrid();
     buildPlayTypeRadios();
-    buildPayoutTable();
     initBetMultipliers();
     updateBalanceUI();
     resetBoard(false);
