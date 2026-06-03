@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dozen Demo – Multi‑Language (Desktop)</title>
+<title>Dozen Demo – Desktop</title>
 <style>
     * { box-sizing: border-box; user-select: none; }
     body { font-family: 'Segoe UI', Arial, sans-serif; padding: 16px 12px; background: #0a0f1a; color: #eef4ff; min-width: 1000px; }
@@ -112,7 +112,7 @@
 </div>
 
 <div class="floating-buttons">
-    <div class="sound-toggle" id="soundToggle">🔊 Sound ON</div>
+    <div class="sound-toggle" id="soundToggle">🔇 Sound OFF</div>
     <div class="payout-toggle" id="payoutToggle">📜 PAYOUT TABLE</div>
     <div class="rules-toggle" id="rulesToggle">📖 GAME RULES</div>
     <select id="langSelector" class="lang-selector">
@@ -175,624 +175,30 @@
         11:{0:0,1:0,2:1,3:4,4:20,5:80,6:400,7:2500,8:20000,9:80000,10:200000,11:1000000}
     };
 
-    // ==================== TRANSLATIONS (22 languages) ====================
+    // --- TRANSLATIONS (22 languages, complete) ---
     const translations = {
-        en: {
-            gameTitle: "🎯 DOZEN GAME",
-            drawLabel: "🎯 DRAW + 12x12 BOARD",
-            infoLabel: "✔️ tap → select | 🟢 hit (🔊) | 🔴 miss (🔊) | ● dot",
-            balanceTitle: "💰 BALANCE",
-            balanceText: "Balance: ",
-            betTitle: "⚡ BET MULTIPLIER",
-            betInfoPrefix: "⚙️ Current bet: ",
-            betInfoUnits: " units",
-            playTypeTitle: "🎯 PLAY TYPE (how many numbers)",
-            startDraw: "✨ START DRAW",
-            reset: "🔄 RESET GAME",
-            topUp: "➕ Top‑up (+100)",
-            drawHeader: "🎯 DRAW",
-            resultInfoPlaceholder: "⚡ Play type: – | Hits: – | Accuracy: – | Payout: – | Win: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Play type: ${pt} | 🎯 Hits: ${hits} | 📊 Accuracy: ${acc}% | 💰 Payout: ${payout}x | 💎 Win: ${win}`,
-            rulesTitle: "📖 Dozen Game Rules",
-            rulesText: `<ul><li>The game is played on a <strong>12×12 grid</strong>. Each cell represents a number (1–12) and a draw position (1st draw, 2nd draw, …, 12th draw).</li><li><strong>Play Type:</strong> Choose how many numbers you want to select (1 to 11). This is your "play type".</li><li><strong>Select a Bet Multiplier:</strong> Choose 1×, 2×, 3×, 4× or 5× – your total stake.</li><li><strong>Select your numbers:</strong> Tap on cells to select numbers. The selected number will appear in the cell. You must select exactly as many numbers as your Play Type.</li><li><strong>Start Draw:</strong> Click START DRAW. The system randomly generates 12 numbers – one for each draw position.</li><li><strong>Winning:</strong> You win if the number you selected matches the drawn number in that exact draw position. The more hits, the higher the payout multiplier.</li><li><strong>Payout Table:</strong> Click the floating 📜 PAYOUT TABLE button to see all multipliers.</li><li><strong>Balance:</strong> Your balance starts at 0. Use Top‑up to add credits. If your balance reaches zero, a sad sound will play.</li></ul><p style="margin-top:10px;">Good luck and have fun! 🍀</p>`,
-            payoutModalTitle: "Payout Table",
-            playHeader: "Play",
-            hitsHeader: "Hits",
-            multHeader: "Multiplier",
-            soundOn: "🔊 Sound ON",
-            soundOff: "🔇 Sound OFF",
-            payoutButton: "📜 PAYOUT TABLE",
-            rulesButton: "📖 GAME RULES",
-            alerts: { noPlayType: "Please select a Play Type first.", maxNumbers: pt=>`You can select at most ${pt} numbers.`, noBet: "Please select a Bet Multiplier.", wrongCount: pt=>`You must select exactly ${pt} numbers.`, insufBalance: "Insufficient balance. Please top up.", noPlayTypeDraw: "Please choose a Play Type.", noBetDraw: "Please select a Bet Multiplier." }
-        },
-        af: {
-            gameTitle: "🎯 DOZEN SPEL",
-            drawLabel: "🎯 TREKKING + 12×12 ROOSTER",
-            infoLabel: "✔️ tik → kies | 🟢 treffer (🔊) | 🔴 mis (🔊) | ● kolletjie",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ INSET MULTIPLIKATOR",
-            betInfoPrefix: "⚙️ Huidige inset: ",
-            betInfoUnits: " eenhede",
-            playTypeTitle: "🎯 SPELTIPE (hoeveel getalle)",
-            startDraw: "✨ BEGIN TREKKING",
-            reset: "🔄 HERSTEL SPEL",
-            topUp: "➕ Herlaai (+100)",
-            drawHeader: "🎯 TREKKING",
-            resultInfoPlaceholder: "⚡ Speltipe: – | Treffers: – | Akkuraatheid: – | Uitbetaling: – | Wins: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Speltipe: ${pt} | 🎯 Treffers: ${hits} | 📊 Akkuraatheid: ${acc}% | 💰 Uitbetaling: ${payout}x | 💎 Wins: ${win}`,
-            rulesTitle: "📖 Dozen Spelreëls",
-            rulesText: `<ul><li>Gespeel op 'n <strong>12×12 rooster</strong>. Elke sel = getal (1–12) + trekposisie (1ste,2de,…,12de).</li><li><strong>Speltipe:</strong> Kies hoeveel getalle (1-11).</li><li><strong>Inset multiplikator:</strong> 1× tot 5×.</li><li><strong>Kies getalle:</strong> Tik op selle. Die getal verskyn. Kies presies jou speltipe.</li><li><strong>Trekk:</strong> Klik. Stelsel genereer 12 ewekansige getalle.</li><li><strong>Wen:</strong> As jou getal ooreenstem met getrekte getal op daardie posisie. Meer treffers = hoër multiplikator.</li><li><strong>Uitbetalingstabel:</strong> Drywende knoppie 📜.</li><li><strong>Saldo:</strong> Begin by 0. Herlaai. By nul – hartseer klank.</li></ul><p>Baie sterkte! 🍀</p>`,
-            payoutModalTitle: "Uitbetalingstabel",
-            playHeader: "Speltipe",
-            hitsHeader: "Treffers",
-            multHeader: "Multiplikator",
-            soundOn: "🔊 KLANK AAN",
-            soundOff: "🔇 KLANK AF",
-            payoutButton: "📜 UITBETALINGSTABEL",
-            rulesButton: "📖 SPELREËLS",
-            alerts: { noPlayType: "Kies eers 'n speltipe.", maxNumbers: pt=>`Jy kan maksimum ${pt} getalle kies.`, noBet: "Kies 'n inset multiplikator.", wrongCount: pt=>`Kies presies ${pt} getalle.`, insufBalance: "Onvoldoende saldo. Herlaai.", noPlayTypeDraw: "Kies 'n speltipe.", noBetDraw: "Kies 'n multiplikator." }
-        },
-        sq: {
-            gameTitle: "🎯 LOJA DOZEN",
-            drawLabel: "🎯 SHUFFULLIM + RRJETA 12×12",
-            infoLabel: "✔️ prek → zgjidh | 🟢 goditje (🔊) | 🔴 gabim (🔊) | ● pikë",
-            balanceTitle: "💰 BILANCI",
-            balanceText: "Bilanci: ",
-            betTitle: "⚡ SHUMËZUESI I BASTIT",
-            betInfoPrefix: "⚙️ Basti aktual: ",
-            betInfoUnits: " njësi",
-            playTypeTitle: "🎯 LLOJI I LOJËS (sa numra)",
-            startDraw: "✨ FILLO SHUFFULLIMIN",
-            reset: "🔄 RIVENDOS LOJËN",
-            topUp: "➕ Rimbush (+100)",
-            drawHeader: "🎯 SHUFFULLIMI",
-            resultInfoPlaceholder: "⚡ Lloji: – | Goditje: – | Saktësia: – | Pagesa: – | Fitimi: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Lloji: ${pt} | 🎯 Goditje: ${hits} | 📊 Saktësia: ${acc}% | 💰 Pagesa: ${payout}x | 💎 Fitimi: ${win}`,
-            rulesTitle: "📖 Rregullat e Lojës Dozen",
-            rulesText: `<ul><li>Loja luhet në një <strong>rrjetë 12×12</strong>. Çdo qelizë përfaqëson një numër (1–12) dhe një pozicion shuffullimi (1.,2.,…,12.).</li><li><strong>Lloji i lojës:</strong> Zgjidh sa numra (1-11).</li><li><strong>Shumëzuesi i bastit:</strong> 1× deri 5×.</li><li><strong>Zgjidh numrat:</strong> Prek qelizat. Numri do të shfaqet. Zgjidh saktësisht aq sa lloji yt.</li><li><strong>Shuffullimi:</strong> Kliko. Sistemi gjeneron 12 numra të rastit.</li><li><strong>Fitimi:</strong> Nëse numri yt përputhet me numrin e tërhequr në atë pozicion. Më shumë goditje = shumëzues më i lartë.</li><li><strong>Tabela e pagesave:</strong> Butoni lundrues 📜.</li><li><strong>Bilanci:</strong> Fillon nga 0. Rimbush. Në zero – tingull i trishtuar.</li></ul><p>Paç fat! 🍀</p>`,
-            payoutModalTitle: "Tabela e Pagesave",
-            playHeader: "Lloji",
-            hitsHeader: "Goditje",
-            multHeader: "Shumëzues",
-            soundOn: "🔊 ZËRI NDIZUR",
-            soundOff: "🔇 ZËRI FIKUR",
-            payoutButton: "📜 TABELA E PAGESAVE",
-            rulesButton: "📖 RREGULLAT",
-            alerts: { noPlayType: "Zgjidh një lloj loje.", maxNumbers: pt=>`Mund të zgjedhësh maksimumi ${pt} numra.`, noBet: "Zgjidh shumëzuesin e bastit.", wrongCount: pt=>`Zgjidh saktësisht ${pt} numra.`, insufBalance: "Bilanci i pamjaftueshëm. Rimbush.", noPlayTypeDraw: "Zgjidh një lloj.", noBetDraw: "Zgjidh shumëzuesin." }
-        },
-        hr: {
-            gameTitle: "🎯 DOZEN IGRA",
-            drawLabel: "🎯 IZVLAČENJE + MREŽA 12×12",
-            infoLabel: "✔️ dodir → odaberi | 🟢 pogodak (🔊) | 🔴 promašaj (🔊) | ● točka",
-            balanceTitle: "💰 STANJE",
-            balanceText: "Stanje: ",
-            betTitle: "⚡ MNOŽITELJ ULOGA",
-            betInfoPrefix: "⚙️ Trenutni ulog: ",
-            betInfoUnits: " jedinica",
-            playTypeTitle: "🎯 TIP IGRE (koliko brojeva)",
-            startDraw: "✨ POKRENI IZVLAČENJE",
-            reset: "🔄 RESETIRAJ IGRU",
-            topUp: "➕ Nadoplati (+100)",
-            drawHeader: "🎯 IZVLAČENJE",
-            resultInfoPlaceholder: "⚡ Tip: – | Pogodaka: – | Točnost: – | Isplata: – | Dobitak: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Tip: ${pt} | 🎯 Pogodaka: ${hits} | 📊 Točnost: ${acc}% | 💰 Isplata: ${payout}x | 💎 Dobitak: ${win}`,
-            rulesTitle: "📖 Pravila igre Dozen",
-            rulesText: `<ul><li>Igra se na <strong>mreži 12×12</strong>. Svaka ćelija predstavlja broj (1–12) i poziciju izvlačenja (1.,2.,…,12.).</li><li><strong>Tip igre:</strong> Odaberite koliko brojeva (1-11).</li><li><strong>Množitelj uloga:</strong> 1× do 5×.</li><li><strong>Odaberite brojeve:</strong> Dodirnite ćelije. Broj će se pojaviti. Odaberite točno onoliko koliko vaš tip.</li><li><strong>Izvlačenje:</strong> Kliknite. Sustav generira 12 slučajnih brojeva.</li><li><strong>Dobitak:</strong> Ako vaš broj odgovara izvučenom broju na toj poziciji. Više pogodaka = veći množitelj.</li><li><strong>Tablica isplate:</strong> Plutajući gumb 📜.</li><li><strong>Stanje:</strong> Počinje od 0. Nadoplatite. Na nuli – tužan zvuk.</li></ul><p>Sretno! 🍀</p>`,
-            payoutModalTitle: "Tablica isplate",
-            playHeader: "Tip",
-            hitsHeader: "Pogodaka",
-            multHeader: "Množitelj",
-            soundOn: "🔊 ZVUK UKLJUČEN",
-            soundOff: "🔇 ZVUK ISKLJUČEN",
-            payoutButton: "📜 TABLICA ISPLATE",
-            rulesButton: "📖 PRAVILA",
-            alerts: { noPlayType: "Odaberite tip igre.", maxNumbers: pt=>`Možete odabrati max ${pt} brojeva.`, noBet: "Odaberite množitelj uloga.", wrongCount: pt=>`Odaberite točno ${pt} brojeva.`, insufBalance: "Nedovoljno stanja. Nadoplatite.", noPlayTypeDraw: "Odaberite tip.", noBetDraw: "Odaberite množitelj." }
-        },
-        cs: {
-            gameTitle: "🎯 DOZEN HRA",
-            drawLabel: "🎯 LOSOVÁNÍ + MŘÍŽKA 12×12",
-            infoLabel: "✔️ klepněte → vyberte | 🟢 zásah (🔊) | 🔴 chyba (🔊) | ● tečka",
-            balanceTitle: "💰 ZŮSTATEK",
-            balanceText: "Zůstatek: ",
-            betTitle: "⚡ NÁSOBITEL VSÁZKY",
-            betInfoPrefix: "⚙️ Aktuální sázka: ",
-            betInfoUnits: " jednotek",
-            playTypeTitle: "🎯 TYP HRY (kolik čísel)",
-            startDraw: "✨ SPUSTIT LOSOVÁNÍ",
-            reset: "🔄 RESETOVAT HRU",
-            topUp: "➕ Dobít (+100)",
-            drawHeader: "🎯 LOSOVÁNÍ",
-            resultInfoPlaceholder: "⚡ Typ: – | Zásahů: – | Přesnost: – | Výplata: – | Výhra: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Typ: ${pt} | 🎯 Zásahů: ${hits} | 📊 Přesnost: ${acc}% | 💰 Výplata: ${payout}x | 💎 Výhra: ${win}`,
-            rulesTitle: "📖 Pravidla hry Dozen",
-            rulesText: `<ul><li>Hra na <strong>mřížce 12×12</strong>. Každá buňka = číslo (1–12) + pozice losování (1.,2.,…,12.).</li><li><strong>Typ hry:</strong> Zvolte kolik čísel (1-11).</li><li><strong>Násobitel sázky:</strong> 1× až 5×.</li><li><strong>Vyberte čísla:</strong> Klepněte na buňky. Číslo se zobrazí. Vyberte přesně tolik jako váš typ.</li><li><strong>Losování:</strong> Klikněte. Systém vygeneruje 12 náhodných čísel.</li><li><strong>Výhra:</strong> Pokud se vaše číslo shoduje s vylosovaným na dané pozici. Více zásahů = vyšší násobitel.</li><li><strong>Tabulka výplat:</strong> Plovoucí tlačítko 📜.</li><li><strong>Zůstatek:</strong> Začíná na 0. Dobijte. Při nule – smutný zvuk.</li></ul><p>Hodně štěstí! 🍀</p>`,
-            payoutModalTitle: "Tabulka výplat",
-            playHeader: "Typ",
-            hitsHeader: "Zásahů",
-            multHeader: "Násobitel",
-            soundOn: "🔊 ZVUK ZAP",
-            soundOff: "🔇 ZVUK VYP",
-            payoutButton: "📜 TABULKA VÝPLAT",
-            rulesButton: "📖 PRAVIDLA",
-            alerts: { noPlayType: "Vyberte typ hry.", maxNumbers: pt=>`Můžete vybrat max ${pt} čísel.`, noBet: "Vyberte násobitel sázky.", wrongCount: pt=>`Vyberte přesně ${pt} čísel.`, insufBalance: "Nedostatek zůstatku. Dobijte.", noPlayTypeDraw: "Vyberte typ.", noBetDraw: "Vyberte násobitel." }
-        },
-        da: {
-            gameTitle: "🎯 DOZEN SPIL",
-            drawLabel: "🎯 TRÆKNING + 12×12 GITTER",
-            infoLabel: "✔️ tryk → vælg | 🟢 hit (🔊) | 🔴 miss (🔊) | ● prik",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ INDSTATSMULTIPLIKATOR",
-            betInfoPrefix: "⚙️ Aktuel indsats: ",
-            betInfoUnits: " enheder",
-            playTypeTitle: "🎯 SPILTYPE (hvor mange tal)",
-            startDraw: "✨ START TRÆKNING",
-            reset: "🔄 NULSTIL SPIL",
-            topUp: "➕ Top‑up (+100)",
-            drawHeader: "🎯 TRÆKNING",
-            resultInfoPlaceholder: "⚡ Spiltype: – | Hits: – | Nøjagtighed: – | Udbetaling: – | Gevinst: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Spiltype: ${pt} | 🎯 Hits: ${hits} | 📊 Nøjagtighed: ${acc}% | 💰 Udbetaling: ${payout}x | 💎 Gevinst: ${win}`,
-            rulesTitle: "📖 Dozen Spilleregler",
-            rulesText: `<ul><li>Spilles på et <strong>12×12 gitter</strong>. Hver celle repræsenterer et tal (1–12) og en trækningsposition (1.,2.,…,12.).</li><li><strong>Spiltype:</strong> Vælg hvor mange tal (1-11).</li><li><strong>Indsatsmultiplikator:</strong> 1× til 5×.</li><li><strong>Vælg tal:</strong> Tryk på celler. Tal vises. Vælg præcis din spiltype.</li><li><strong>Træk:</strong> Klik. Systemet genererer 12 tilfældige tal.</li><li><strong>Vind:</strong> Hvis dit tal matcher det trukne tal på den position. Flere hits = højere multiplikator.</li><li><strong>Udbetalingstabel:</strong> Flydende knap 📜.</li><li><strong>Saldo:</strong> Starter på 0. Top‑up. Nul = trist lyd.</li></ul><p>Held og lykke! 🍀</p>`,
-            payoutModalTitle: "Udbetalingstabel",
-            playHeader: "Spiltype",
-            hitsHeader: "Hits",
-            multHeader: "Multiplikator",
-            soundOn: "🔊 LYD TIL",
-            soundOff: "🔇 LYD FRA",
-            payoutButton: "📜 UDBETALINGSTABEL",
-            rulesButton: "📖 SPILLEREGLER",
-            alerts: { noPlayType: "Vælg en spiltype først.", maxNumbers: pt=>`Du kan vælge max ${pt} tal.`, noBet: "Vælg indsatsmultiplikator.", wrongCount: pt=>`Vælg præcis ${pt} tal.`, insufBalance: "Utilstrækkelig saldo. Top‑up.", noPlayTypeDraw: "Vælg en spiltype.", noBetDraw: "Vælg indsatsmultiplikator." }
-        },
-        nl: {
-            gameTitle: "🎯 DOZEN SPEL",
-            drawLabel: "🎯 TREKKING + 12×12 ROOSTER",
-            infoLabel: "✔️ tik → selecteer | 🟢 raak (🔊) | 🔴 mis (🔊) | ● stip",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ INZET MULTIPLICATOR",
-            betInfoPrefix: "⚙️ Huidige inzet: ",
-            betInfoUnits: " eenheden",
-            playTypeTitle: "🎯 SPELTYPE (hoeveel nummers)",
-            startDraw: "✨ START TREKKING",
-            reset: "🔄 RESET SPEL",
-            topUp: "➕ Opladen (+100)",
-            drawHeader: "🎯 TREKKING",
-            resultInfoPlaceholder: "⚡ Speltype: – | Hits: – | Nauwkeurigheid: – | Uitbetaling: – | Winst: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Speltype: ${pt} | 🎯 Hits: ${hits} | 📊 Nauwkeurigheid: ${acc}% | 💰 Uitbetaling: ${payout}x | 💎 Winst: ${win}`,
-            rulesTitle: "📖 Dozen Spelregels",
-            rulesText: `<ul><li>Gespeeld op een <strong>12×12 rooster</strong>. Elke cel = nummer (1–12) + trekpositie (1e,2e,…,12e).</li><li><strong>Speltype:</strong> Kies hoeveel nummers (1-11).</li><li><strong>Inzet multiplicator:</strong> 1× tot 5×.</li><li><strong>Selecteer nummers:</strong> Tik op cellen. Het nummer verschijnt. Selecteer exact je speltype.</li><li><strong>Trekking:</strong> Klik. Systeem genereert 12 willekeurige nummers.</li><li><strong>Winnen:</strong> Als jouw nummer overeenkomt met getrokken nummer op die positie. Meer hits = hogere multiplicator.</li><li><strong>Uitbetalingstabel:</strong> Zwevende knop 📜.</li><li><strong>Saldo:</strong> Start op 0. Opladen. Bij nul – treurig geluid.</li></ul><p>Veel succes! 🍀</p>`,
-            payoutModalTitle: "Uitbetalingstabel",
-            playHeader: "Speltype",
-            hitsHeader: "Hits",
-            multHeader: "Multiplicator",
-            soundOn: "🔊 GELUID AAN",
-            soundOff: "🔇 GELUID UIT",
-            payoutButton: "📜 UITBETALINGSTABEL",
-            rulesButton: "📖 SPELREGELS",
-            alerts: { noPlayType: "Selecteer eerst een speltype.", maxNumbers: pt=>`Je kunt maximaal ${pt} nummers selecteren.`, noBet: "Kies een inzet multiplicator.", wrongCount: pt=>`Selecteer exact ${pt} nummers.`, insufBalance: "Onvoldoende saldo. Opladen.", noPlayTypeDraw: "Kies een speltype.", noBetDraw: "Kies een multiplicator." }
-        },
-        fi: {
-            gameTitle: "🎯 DOZEN PELI",
-            drawLabel: "🎯 ARVONTA + 12×12 RUUDUKKO",
-            infoLabel: "✔️ napauta → valitse | 🟢 osuma (🔊) | 🔴 huti (🔊) | ● piste",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ PANOSTUSKERROIN",
-            betInfoPrefix: "⚙️ Nykyinen panos: ",
-            betInfoUnits: " yksikköä",
-            playTypeTitle: "🎯 PELITYYPPI (kuinka monta numeroa)",
-            startDraw: "✨ ALOITA ARVONTA",
-            reset: "🔄 NOLLAA PELI",
-            topUp: "➕ Lataa (+100)",
-            drawHeader: "🎯 ARVONTA",
-            resultInfoPlaceholder: "⚡ Pelityyppi: – | Osumat: – | Tarkkuus: – | Voittokerroin: – | Voitto: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Pelityyppi: ${pt} | 🎯 Osumat: ${hits} | 📊 Tarkkuus: ${acc}% | 💰 Voittokerroin: ${payout}x | 💎 Voitto: ${win}`,
-            rulesTitle: "📖 Dozen Pelisäännöt",
-            rulesText: `<ul><li>Pelataan <strong>12×12 ruudukolla</strong>. Jokainen solu edustaa numeroa (1–12) ja arvontapositiota (1.,2.,…,12.).</li><li><strong>Pelityyppi:</strong> Valitse kuinka monta numeroa (1-11).</li><li><strong>Panostuskerroin:</strong> 1×,2×,3×,4×,5×.</li><li><strong>Valitse numerot:</strong> Napauta soluja. Numero näkyy. Valitse täsmälleen pelityyppisi verran.</li><li><strong>Arvo:</strong> Klikkaa. Järjestelmä arpoo 12 satunnaista numeroa.</li><li><strong>Voita:</strong> Jos valitsemasi numero vastaa arvottua numeroa kyseisessä positiossa. Enemmän osumia = korkeampi kerroin.</li><li><strong>Voittotaulukko:</strong> Kelluva painike 📜.</li><li><strong>Saldo:</strong> Alkaa 0:sta. Lataa. Jos nolla, surullinen ääni.</li></ul><p>Onnea peliin! 🍀</p>`,
-            payoutModalTitle: "Voittotaulukko",
-            playHeader: "Pelityyppi",
-            hitsHeader: "Osumat",
-            multHeader: "Kerroin",
-            soundOn: "🔊 ÄÄNI PÄÄLLE",
-            soundOff: "🔇 ÄÄNI POIS",
-            payoutButton: "📜 VOITTOTAULUKKO",
-            rulesButton: "📖 SÄÄNNÖT",
-            alerts: { noPlayType: "Valitse pelityyppi ensin.", maxNumbers: pt=>`Voit valita enintään ${pt} numeroa.`, noBet: "Valitse panostuskerroin.", wrongCount: pt=>`Valitse täsmälleen ${pt} numeroa.`, insufBalance: "Liian vähän saldoa. Lataa.", noPlayTypeDraw: "Valitse pelityyppi.", noBetDraw: "Valitse panostuskerroin." }
-        },
-        fr: {
-            gameTitle: "🎯 DOZEN JEU",
-            drawLabel: "🎯 TIRAGE + GRILLE 12×12",
-            infoLabel: "✔️ appuyer → sélectionner | 🟢 coup (🔊) | 🔴 échec (🔊) | ● point",
-            balanceTitle: "💰 SOLDE",
-            balanceText: "Solde: ",
-            betTitle: "⚡ MULTIPLICATEUR DE MISE",
-            betInfoPrefix: "⚙️ Mise actuelle: ",
-            betInfoUnits: " unités",
-            playTypeTitle: "🎯 TYPE DE JEU (combien de numéros)",
-            startDraw: "✨ LANCER LE TIRAGE",
-            reset: "🔄 RÉINITIALISER",
-            topUp: "➕ Recharger (+100)",
-            drawHeader: "🎯 TIRAGE",
-            resultInfoPlaceholder: "⚡ Type: – | Coups: – | Précision: – | Gain: – | Victoire: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Type: ${pt} | 🎯 Coups: ${hits} | 📊 Précision: ${acc}% | 💰 Gain: ${payout}x | 💎 Victoire: ${win}`,
-            rulesTitle: "📖 Règles du Jeu Dozen",
-            rulesText: `<ul><li>Grille <strong>12×12</strong>. Chaque case = numéro (1–12) + position de tirage (1er,…,12ème).</li><li><strong>Type:</strong> Choisissez combien de numéros (1-11).</li><li><strong>Multiplicateur:</strong> 1× à 5×.</li><li><strong>Sélectionnez:</strong> Appuyez sur les cases. Le numéro apparaît. Sélectionnez exactement votre type.</li><li><strong>Tirer:</strong> Cliquez. Le système génère 12 numéros aléatoires.</li><li><strong>Gagner:</strong> Si votre numéro correspond au tirage à cette position. Plus de coups = multiplicateur plus élevé.</li><li><strong>Tableau des gains:</strong> Bouton flottant 📜.</li><li><strong>Solde:</strong> Démarre à 0. Rechargez. À zéro, son triste.</li></ul><p>Bonne chance! 🍀</p>`,
-            payoutModalTitle: "Tableau des Gains",
-            playHeader: "Type",
-            hitsHeader: "Coups",
-            multHeader: "Multiplicateur",
-            soundOn: "🔊 SON ON",
-            soundOff: "🔇 SON OFF",
-            payoutButton: "📜 TABLEAU DES GAINS",
-            rulesButton: "📖 RÈGLES",
-            alerts: { noPlayType: "Choisissez un type.", maxNumbers: pt=>`Maximum ${pt} numéros.`, noBet: "Choisissez multiplicateur.", wrongCount: pt=>`Sélectionnez exactement ${pt} numéros.`, insufBalance: "Solde insuffisant. Rechargez.", noPlayTypeDraw: "Choisissez un type.", noBetDraw: "Choisissez multiplicateur." }
-        },
-        de: {
-            gameTitle: "🎯 DOZEN SPIEL",
-            drawLabel: "🎯 ZIEHUNG + 12×12 FELD",
-            infoLabel: "✔️ tippen → auswählen | 🟢 Treffer (🔊) | 🔴 Fehl (🔊) | ● Punkt",
-            balanceTitle: "💰 KONTOSTAND",
-            balanceText: "Kontostand: ",
-            betTitle: "⚡ EINSATZ MULTIPLIKATOR",
-            betInfoPrefix: "⚙️ Aktueller Einsatz: ",
-            betInfoUnits: " Einheiten",
-            playTypeTitle: "🎯 SPIELTYP (wie viele Zahlen)",
-            startDraw: "✨ ZIEHUNG STARTEN",
-            reset: "🔄 SPIEL ZURÜCKSETZEN",
-            topUp: "➕ Aufladen (+100)",
-            drawHeader: "🎯 ZIEHUNG",
-            resultInfoPlaceholder: "⚡ Spieltyp: – | Treffer: – | Genauigkeit: – | Auszahlung: – | Gewinn: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Spieltyp: ${pt} | 🎯 Treffer: ${hits} | 📊 Genauigkeit: ${acc}% | 💰 Auszahlung: ${payout}x | 💎 Gewinn: ${win}`,
-            rulesTitle: "📖 Dozen Spielregeln",
-            rulesText: `<ul><li>Das Spiel wird auf einem <strong>12×12-Raster</strong> gespielt. Jede Zelle repräsentiert eine Zahl (1–12) und eine Ziehposition (1. Ziehung, 2. Ziehung, …, 12. Ziehung).</li><li><strong>Spieltyp:</strong> Wähle, wie viele Zahlen du auswählen möchtest (1 bis 11). Das ist dein "Spieltyp".</li><li><strong>Wähle einen Einsatz-Multiplikator:</strong> 1×, 2×, 3×, 4× oder 5× – dein Gesamteinsatz.</li><li><strong>Zahlen auswählen:</strong> Tippe auf Zellen, um Zahlen auszuwählen. Du musst genau so viele Zahlen auswählen wie dein Spieltyp vorgibt.</li><li><strong>Ziehung starten:</strong> Klicke auf ZIEHUNG STARTEN. Das System generiert zufällig 12 Zahlen – eine für jede Ziehposition.</li><li><strong>Gewinnen:</strong> Du gewinnst, wenn deine ausgewählte Zahl mit der gezogenen Zahl an genau dieser Ziehposition übereinstimmt. Je mehr Treffer, desto höher der Auszahlungsmultiplikator.</li><li><strong>Auszahlungstabelle:</strong> Klicke auf die schwebende Schaltfläche 📜 PAYOUT TABLE, um alle Multiplikatoren zu sehen.</li><li><strong>Kontostand:</strong> Dein Kontostand beginnt bei 0. Verwende Aufladen, um Guthaben hinzuzufügen. Wenn dein Kontostand Null erreicht, ertönt ein trauriger Ton.</li></ul><p>Viel Glück und viel Spaß! 🍀</p>`,
-            payoutModalTitle: "Auszahlungstabelle",
-            playHeader: "Spieltyp",
-            hitsHeader: "Treffer",
-            multHeader: "Multiplikator",
-            soundOn: "🔊 TON EIN",
-            soundOff: "🔇 TON AUS",
-            payoutButton: "📜 AUSZAHLUNGSTABELLE",
-            rulesButton: "📖 SPIELREGELN",
-            alerts: { noPlayType: "Bitte wähle zuerst einen Spieltyp aus.", maxNumbers: pt=>`Du kannst maximal ${pt} Zahlen auswählen.`, noBet: "Bitte wähle einen Einsatz-Multiplikator.", wrongCount: pt=>`Du musst genau ${pt} Zahlen auswählen.`, insufBalance: "Nicht genug Guthaben. Bitte lade auf.", noPlayTypeDraw: "Bitte wähle einen Spieltyp.", noBetDraw: "Bitte wähle einen Einsatz-Multiplikator." }
-        },
-        el: {
-            gameTitle: "🎯 DOZEN ΠΑΙΧΝΙΔΙ",
-            drawLabel: "🎯 ΚΛΗΡΩΣΗ + ΠΛΕΓΜΑ 12×12",
-            infoLabel: "✔️ πατήστε → επιλέξτε | 🟢 επιτυχία (🔊) | 🔴 αποτυχία (🔊) | ● τελεία",
-            balanceTitle: "💰 ΥΠΟΛΟΙΠΟ",
-            balanceText: "Υπόλοιπο: ",
-            betTitle: "⚡ ΠΟΛΛΑΠΛΑΣΙΑΣΤΗΣ ΣΤΟΙΧΗΜΑΤΟΣ",
-            betInfoPrefix: "⚙️ Τρέχον στοίχημα: ",
-            betInfoUnits: " μονάδες",
-            playTypeTitle: "🎯 ΤΥΠΟΣ ΠΑΙΧΝΙΔΙΟΥ (πόσους αριθμούς)",
-            startDraw: "✨ ΕΝΑΡΞΗ ΚΛΗΡΩΣΗΣ",
-            reset: "🔄 ΕΠΑΝΑΦΟΡΑ ΠΑΙΧΝΙΔΙΟΥ",
-            topUp: "➕ Φόρτωση (+100)",
-            drawHeader: "🎯 ΚΛΗΡΩΣΗ",
-            resultInfoPlaceholder: "⚡ Τύπος: – | Επιτυχίες: – | Ακρίβεια: – | Πληρωμή: – | Κέρδος: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Τύπος: ${pt} | 🎯 Επιτυχίες: ${hits} | 📊 Ακρίβεια: ${acc}% | 💰 Πληρωμή: ${payout}x | 💎 Κέρδος: ${win}`,
-            rulesTitle: "📖 Κανόνες Παιχνιδιού Dozen",
-            rulesText: `<ul><li>Παιχνίδι σε <strong>πλέγμα 12×12</strong>. Κάθε κελί = αριθμός (1–12) + θέση κλήρωσης (1η,2η,…,12η).</li><li><strong>Τύπος:</strong> Επιλέξτε πόσους αριθμούς (1-11).</li><li><strong>Πολλαπλασιαστής στοιχήματος:</strong> 1× έως 5×.</li><li><strong>Επιλέξτε αριθμούς:</strong> Πατήστε κελιά. Θα εμφανιστεί ο αριθμός. Επιλέξτε ακριβώς όσους ο τύπος σας.</li><li><strong>Κλήρωση:</strong> Κλικ. Το σύστημα παράγει 12 τυχαίους αριθμούς.</li><li><strong>Νίκη:</strong> Αν ο αριθμός σας ταιριάζει με τον κληρωθέντα σε αυτή τη θέση. Περισσότερες επιτυχίες = υψηλότερος πολλαπλασιαστής.</li><li><strong>Πίνακας πληρωμών:</strong> Πλωτό κουμπί 📜.</li><li><strong>Υπόλοιπο:</strong> Ξεκινά από 0. Φόρτωση. Στο μηδέν – λυπηρός ήχος.</li></ul><p>Καλή τύχη! 🍀</p>`,
-            payoutModalTitle: "Πίνακας Πληρωμών",
-            playHeader: "Τύπος",
-            hitsHeader: "Επιτυχίες",
-            multHeader: "Πολλαπλασιαστής",
-            soundOn: "🔊 ΗΧΟΣ ON",
-            soundOff: "🔇 ΗΧΟΣ OFF",
-            payoutButton: "📜 ΠΙΝΑΚΑΣ ΠΛΗΡΩΜΩΝ",
-            rulesButton: "📖 ΚΑΝΟΝΕΣ",
-            alerts: { noPlayType: "Επιλέξτε τύπο παιχνιδιού.", maxNumbers: pt=>`Μπορείτε να επιλέξετε έως ${pt} αριθμούς.`, noBet: "Επιλέξτε πολλαπλασιαστή στοιχήματος.", wrongCount: pt=>`Επιλέξτε ακριβώς ${pt} αριθμούς.`, insufBalance: "Ανεπαρκές υπόλοιπο. Φορτώστε.", noPlayTypeDraw: "Επιλέξτε τύπο.", noBetDraw: "Επιλέξτε πολλαπλασιαστή." }
-        },
-        hu: {
-            gameTitle: "🎯 DOZEN JÁTÉK",
-            drawLabel: "🎯 HÚZÁS + 12×12 TÁBLA",
-            infoLabel: "✔️ koppints → kijelölés | 🟢 találat (🔊) | 🔴 tévesztés (🔊) | ● pont",
-            balanceTitle: "💰 EGYENLEG",
-            balanceText: "Egyenleg: ",
-            betTitle: "⚡ TÉT SZORZÓ",
-            betInfoPrefix: "⚙️ Jelenlegi tét: ",
-            betInfoUnits: " egység",
-            playTypeTitle: "🎯 JÁTÉK TÍPUS (hány számot választasz)",
-            startDraw: "✨ HÚZÁS INDIÍTÁSA",
-            reset: "🔄 JÁTÉK VISSZAÁLLÍTÁSA",
-            topUp: "➕ Feltöltés (+100)",
-            drawHeader: "🎯 HÚZÁS",
-            resultInfoPlaceholder: "⚡ Játéktípus: – | Találatok: – | Pontosság: – | Kifizetés: – | Nyeremény: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Játéktípus: ${pt} | 🎯 Találatok: ${hits} | 📊 Pontosság: ${acc}% | 💰 Kifizetés: ${payout}x | 💎 Nyeremény: ${win}`,
-            rulesTitle: "📖 Dozen Játékszabályok",
-            rulesText: `<ul><li>A játék egy <strong>12×12-es táblán</strong> zajlik. Minden cella egy számot (1–12) és egy húzási pozíciót (1. húzás, 2. húzás, …, 12. húzás) képvisel.</li><li><strong>Játéktípus:</strong> Válaszd ki, hány számot szeretnél megjelölni (1 és 11 között). Ez a te "játéktípusod".</li><li><strong>Válassz tét szorzót:</strong> 1×, 2×, 3×, 4× vagy 5× – a teljes téthez.</li><li><strong>Számok kiválasztása:</strong> Koppints a cellákra a számok kijelöléséhez. Pontosan annyi számot kell kijelölnöd, amennyi a játéktípusod.</li><li><strong>Húzás indítása:</strong> Kattints a HÚZÁS INDIÍTÁSA gombra. A rendszer véletlenszerűen generál 12 számot – minden húzási pozícióhoz egyet.</li><li><strong>Nyereség:</strong> Akkor nyersz, ha a kiválasztott számod megegyezik a kisorsolt számmal az adott húzási pozícióban. Minél több találatod van, annál magasabb a nyereményszorzó.</li><li><strong>Kifizetési tábla:</strong> Kattints a lebegő 📜 PAYOUT TABLE gombra a szorzók megtekintéséhez.</li><li><strong>Egyenleg:</strong> Az egyenleged 0-ról indul. Használd a Feltöltés gombot a feltöltéshez. Ha az egyenleged eléri a nullát, egy szomorú hang szólal meg.</li></ul><p style="margin-top:10px;">Sok szerencsét és jó szórakozást! 🍀</p>`,
-            payoutModalTitle: "Kifizetési tábla",
-            playHeader: "Játéktípus",
-            hitsHeader: "Találat",
-            multHeader: "Szorzó",
-            soundOn: "🔊 HANG BE",
-            soundOff: "🔇 HANG KI",
-            payoutButton: "📜 KIFIZETÉSI TÁBLA",
-            rulesButton: "📖 JÁTÉKSZABÁLYOK",
-            alerts: { noPlayType: "Kérlek, válassz játéktípust!", maxNumbers: pt=>`Legfeljebb ${pt} számot választhatsz.`, noBet: "Kérlek, válassz tét szorzót!", wrongCount: pt=>`Pontosan ${pt} számot kell kiválasztanod.`, insufBalance: "Nincs elegendő egyenleg. Tölts fel!", noPlayTypeDraw: "Kérlek, válassz játéktípust!", noBetDraw: "Kérlek, válassz tét szorzót!" }
-        },
-        it: {
-            gameTitle: "🎯 DOZEN GIOCO",
-            drawLabel: "🎯 ESTRAZIONE + GRIGLIA 12×12",
-            infoLabel: "✔️ tocca → seleziona | 🟢 colpo (🔊) | 🔴 sbaglio (🔊) | ● punto",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ MOLTIPLICATORE PUNTATA",
-            betInfoPrefix: "⚙️ Puntata attuale: ",
-            betInfoUnits: " unità",
-            playTypeTitle: "🎯 TIPO DI GIOCO (quanti numeri)",
-            startDraw: "✨ INIZIA ESTRAZIONE",
-            reset: "🔄 RESET GIOCO",
-            topUp: "➕ Ricarica (+100)",
-            drawHeader: "🎯 ESTRAZIONE",
-            resultInfoPlaceholder: "⚡ Tipo: – | Colpi: – | Precisione: – | Pagamento: – | Vincita: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Tipo: ${pt} | 🎯 Colpi: ${hits} | 📊 Precisione: ${acc}% | 💰 Pagamento: ${payout}x | 💎 Vincita: ${win}`,
-            rulesTitle: "📖 Regole del Gioco Dozen",
-            rulesText: `<ul><li>Griglia <strong>12×12</strong>. Ogni cella: numero (1–12) e posizione estrazione (1ª,2ª,…,12ª).</li><li><strong>Tipo:</strong> Scegli quanti numeri (1-11).</li><li><strong>Moltiplicatore:</strong> 1×,2×,3×,4×,5×.</li><li><strong>Seleziona:</strong> Tocca celle. Il numero appare. Seleziona esattamente il tuo tipo.</li><li><strong>Estrai:</strong> Clic. Sistema genera 12 numeri casuali.</li><li><strong>Vinci:</strong> Se il tuo numero coincide con l’estratto in quella posizione. Più colpi, più alto il moltiplicatore.</li><li><strong>Tabella pagamenti:</strong> Pulsante flottante 📜.</li><li><strong>Saldo:</strong> Parte da 0. Ricarica. A zero suono triste.</li></ul><p>Buona fortuna! 🍀</p>`,
-            payoutModalTitle: "Tabella Pagamenti",
-            playHeader: "Tipo",
-            hitsHeader: "Colpi",
-            multHeader: "Moltiplicatore",
-            soundOn: "🔊 SUONO ON",
-            soundOff: "🔇 SUONO OFF",
-            payoutButton: "📜 TABELLA PAGAMENTI",
-            rulesButton: "📖 REGOLE",
-            alerts: { noPlayType: "Seleziona un tipo.", maxNumbers: pt=>`Massimo ${pt} numeri.`, noBet: "Scegli moltiplicatore.", wrongCount: pt=>`Seleziona esattamente ${pt} numeri.`, insufBalance: "Saldo insufficiente. Ricarica.", noPlayTypeDraw: "Scegli un tipo.", noBetDraw: "Scegli moltiplicatore." }
-        },
-        no: {
-            gameTitle: "🎯 DOZEN SPILL",
-            drawLabel: "🎯 TREKNING + 12×12 RUTENETT",
-            infoLabel: "✔️ trykk → velg | 🟢 treff (🔊) | 🔴 bom (🔊) | ● prikk",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ INNSATSMULTIPLIKATOR",
-            betInfoPrefix: "⚙️ Gjeldende innsats: ",
-            betInfoUnits: " enheter",
-            playTypeTitle: "🎯 SPILLTYPE (hvor mange tall)",
-            startDraw: "✨ START TREKNING",
-            reset: "🔄 TILBAKESTILL SPILL",
-            topUp: "➕ Topp opp (+100)",
-            drawHeader: "🎯 TREKNING",
-            resultInfoPlaceholder: "⚡ Spilltype: – | Treff: – | Nøyaktighet: – | Utbetaling: – | Gevinst: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Spilltype: ${pt} | 🎯 Treff: ${hits} | 📊 Nøyaktighet: ${acc}% | 💰 Utbetaling: ${payout}x | 💎 Gevinst: ${win}`,
-            rulesTitle: "📖 Dozen Spilleregler",
-            rulesText: `<ul><li>Spilles på et <strong>12×12 rutenett</strong>. Hver celle representerer et tall (1–12) og en trekningsposisjon (1.,2.,…,12.).</li><li><strong>Spilltype:</strong> Velg hvor mange tall (1-11).</li><li><strong>Innsatsmultiplikator:</strong> 1× til 5×.</li><li><strong>Velg tall:</strong> Trykk på celler. Tallet vises. Velg nøyaktig din spilltype.</li><li><strong>Trekk:</strong> Klikk. Systemet genererer 12 tilfeldige tall.</li><li><strong>Vinn:</strong> Hvis tallet ditt matcher det trukne tallet på den posisjonen. Flere treff = høyere multiplikator.</li><li><strong>Utbetalingstabell:</strong> Flytende knapp 📜.</li><li><strong>Saldo:</strong> Starter på 0. Topp opp. Ved null – trist lyd.</li></ul><p>Lykke til! 🍀</p>`,
-            payoutModalTitle: "Utbetalingstabell",
-            playHeader: "Spilltype",
-            hitsHeader: "Treff",
-            multHeader: "Multiplikator",
-            soundOn: "🔊 LYD PÅ",
-            soundOff: "🔇 LYD AV",
-            payoutButton: "📜 UTBETALINGSTABELL",
-            rulesButton: "📖 SPILLEREGLER",
-            alerts: { noPlayType: "Velg en spilltype først.", maxNumbers: pt=>`Du kan velge maks ${pt} tall.`, noBet: "Velg innsatsmultiplikator.", wrongCount: pt=>`Velg nøyaktig ${pt} tall.`, insufBalance: "Utilstrekkelig saldo. Topp opp.", noPlayTypeDraw: "Velg en spilltype.", noBetDraw: "Velg innsatsmultiplikator." }
-        },
-        pl: {
-            gameTitle: "🎯 DOZEN GRA",
-            drawLabel: "🎯 LOSOWANIE + SIATKA 12×12",
-            infoLabel: "✔️ dotknij → wybierz | 🟢 trafienie (🔊) | 🔴 pudło (🔊) | ● kropka",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ MNOŻNIK ZAKŁADU",
-            betInfoPrefix: "⚙️ Bieżący zakład: ",
-            betInfoUnits: " jednostek",
-            playTypeTitle: "🎯 TYP GRY (ile liczb)",
-            startDraw: "✨ ROZPOCZNIJ LOSOWANIE",
-            reset: "🔄 RESETUJ GRĘ",
-            topUp: "➕ Doładuj (+100)",
-            drawHeader: "🎯 LOSOWANIE",
-            resultInfoPlaceholder: "⚡ Typ: – | Trafień: – | Dokładność: – | Wypłata: – | Wygrana: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Typ: ${pt} | 🎯 Trafień: ${hits} | 📊 Dokładność: ${acc}% | 💰 Wypłata: ${payout}x | 💎 Wygrana: ${win}`,
-            rulesTitle: "📖 Zasady gry Dozen",
-            rulesText: `<ul><li>Gra na <strong>siatce 12×12</strong>. Każda komórka = liczba (1–12) + pozycja losowania (1.,2.,…,12.).</li><li><strong>Typ gry:</strong> Wybierz ile liczb (1-11).</li><li><strong>Mnożnik zakładu:</strong> 1× do 5×.</li><li><strong>Wybierz liczby:</strong> Dotknij komórek. Liczba się pojawi. Wybierz dokładnie tyle ile twój typ.</li><li><strong>Losowanie:</strong> Kliknij. System generuje 12 losowych liczb.</li><li><strong>Wygrana:</strong> Jeśli twoja liczba zgadza się z wylosowaną na tej pozycji. Więcej trafień = wyższy mnożnik.</li><li><strong>Tabela wypłat:</strong> Pływający przycisk 📜.</li><li><strong>Saldo:</strong> Zaczyna się od 0. Doładuj. Przy zerze – smutny dźwięk.</li></ul><p>Powodzenia! 🍀</p>`,
-            payoutModalTitle: "Tabela wypłat",
-            playHeader: "Typ",
-            hitsHeader: "Trafień",
-            multHeader: "Mnożnik",
-            soundOn: "🔊 DŹWIĘK WŁ.",
-            soundOff: "🔇 DŹWIĘK WYŁ.",
-            payoutButton: "📜 TABELA WYPŁAT",
-            rulesButton: "📖 ZASADY",
-            alerts: { noPlayType: "Wybierz typ gry.", maxNumbers: pt=>`Możesz wybrać max ${pt} liczb.`, noBet: "Wybierz mnożnik zakładu.", wrongCount: pt=>`Wybierz dokładnie ${pt} liczb.`, insufBalance: "Niewystarczające saldo. Doładuj.", noPlayTypeDraw: "Wybierz typ.", noBetDraw: "Wybierz mnożnik." }
-        },
-        pt: {
-            gameTitle: "🎯 DOZEN JOGO",
-            drawLabel: "🎯 SORTEIO + GRADE 12×12",
-            infoLabel: "✔️ toque → selecionar | 🟢 acerto (🔊) | 🔴 erro (🔊) | ● ponto",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ MULTIPLICADOR DE APOSTA",
-            betInfoPrefix: "⚙️ Aposta atual: ",
-            betInfoUnits: " unidades",
-            playTypeTitle: "🎯 TIPO DE JOGO (quantos números)",
-            startDraw: "✨ INICIAR SORTEIO",
-            reset: "🔄 REINICIAR JOGO",
-            topUp: "➕ Recarregar (+100)",
-            drawHeader: "🎯 SORTEIO",
-            resultInfoPlaceholder: "⚡ Tipo: – | Acertos: – | Precisão: – | Pagamento: – | Ganho: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Tipo: ${pt} | 🎯 Acertos: ${hits} | 📊 Precisão: ${acc}% | 💰 Pagamento: ${payout}x | 💎 Ganho: ${win}`,
-            rulesTitle: "📖 Regras do Jogo Dozen",
-            rulesText: `<ul><li>Grade <strong>12×12</strong>. Cada célula: número (1–12) e posição (1º sorteio,…).</li><li><strong>Tipo:</strong> Escolha quantos números (1-11).</li><li><strong>Multiplicador:</strong> 1× a 5×.</li><li><strong>Selecione:</strong> Toque nas células. O número aparecerá. Selecione exatamente o seu tipo.</li><li><strong>Sortear:</strong> Clique. Sistema gera 12 números aleatórios.</li><li><strong>Ganhar:</strong> Se o número selecionado coincidir com o sorteado na posição exata. Mais acertos, maior multiplicador.</li><li><strong>Tabela de pagamentos:</strong> Botão flutuante 📜.</li><li><strong>Saldo:</strong> Começa em 0. Recarregue. Se zero, som triste.</li></ul><p>Boa sorte! 🍀</p>`,
-            payoutModalTitle: "Tabela de Pagamentos",
-            playHeader: "Tipo",
-            hitsHeader: "Acertos",
-            multHeader: "Multiplicador",
-            soundOn: "🔊 SOM ON",
-            soundOff: "🔇 SOM OFF",
-            payoutButton: "📜 TABELA DE PAGAMENTOS",
-            rulesButton: "📖 REGRAS",
-            alerts: { noPlayType: "Selecione um tipo.", maxNumbers: pt=>`Máximo ${pt} números.`, noBet: "Escolha multiplicador.", wrongCount: pt=>`Selecione exatamente ${pt} números.`, insufBalance: "Saldo insuficiente. Recarregue.", noPlayTypeDraw: "Escolha um tipo.", noBetDraw: "Escolha multiplicador." }
-        },
-        sr: {
-            gameTitle: "🎯 DOZEN IGRA",
-            drawLabel: "🎯 IZVLАČENJE + MREŽA 12×12",
-            infoLabel: "✔️ dodir → izaberi | 🟢 pogodak (🔊) | 🔴 promašaj (🔊) | ● tačka",
-            balanceTitle: "💰 STANJE",
-            balanceText: "Stanje: ",
-            betTitle: "⚡ MNOŽITELJ ULOGA",
-            betInfoPrefix: "⚙️ Trenutni ulog: ",
-            betInfoUnits: " jedinica",
-            playTypeTitle: "🎯 TIP IGRE (koliko brojeva)",
-            startDraw: "✨ POKRENI IZVLAČENJE",
-            reset: "🔄 RESETUJ IGRU",
-            topUp: "➕ Dopuni (+100)",
-            drawHeader: "🎯 IZVLAČENJE",
-            resultInfoPlaceholder: "⚡ Tip: – | Pogodaka: – | Tačnost: – | Isplata: – | Dobitak: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Tip: ${pt} | 🎯 Pogodaka: ${hits} | 📊 Tačnost: ${acc}% | 💰 Isplata: ${payout}x | 💎 Dobitak: ${win}`,
-            rulesTitle: "📖 Pravila igre Dozen",
-            rulesText: `<ul><li>Igra na <strong>mreži 12×12</strong>. Svaka ćelija = broj (1–12) + pozicija izvlačenja (1.,2.,…,12.).</li><li><strong>Tip igre:</strong> Odaberi koliko brojeva (1-11).</li><li><strong>Množitelj uloga:</strong> 1× do 5×.</li><li><strong>Izaberi brojeve:</strong> Dodirni ćelije. Broj će se pojaviti. Izaberi tačno svoj tip.</li><li><strong>Izvlačenje:</strong> Klikni. Sistem generiše 12 slučajnih brojeva.</li><li><strong>Pobeda:</strong> Ako tvoj broj odgovara izvučenom na toj poziciji. Više pogodaka = veći množitelj.</li><li><strong>Tabela isplate:</strong> Plutajuće dugme 📜.</li><li><strong>Stanje:</strong> Počinje od 0. Dopuni. Na nuli – tužan zvuk.</li></ul><p>Srećno! 🍀</p>`,
-            payoutModalTitle: "Tabela isplate",
-            playHeader: "Tip",
-            hitsHeader: "Pogodaka",
-            multHeader: "Množitelj",
-            soundOn: "🔊 ZVUK UKLJUČEN",
-            soundOff: "🔇 ZVUK ISKLJUČEN",
-            payoutButton: "📜 TABELA ISPLATE",
-            rulesButton: "📖 PRAVILA",
-            alerts: { noPlayType: "Izaberi tip igre.", maxNumbers: pt=>`Maksimalno ${pt} brojeva.`, noBet: "Izaberi množitelj uloga.", wrongCount: pt=>`Izaberi tačno ${pt} brojeva.`, insufBalance: "Nedovoljno stanja. Dopuni.", noPlayTypeDraw: "Izaberi tip.", noBetDraw: "Izaberi množitelj." }
-        },
-        sk: {
-            gameTitle: "🎯 DOZEN HRA",
-            drawLabel: "🎯 ŽREB + MREŽA 12×12",
-            infoLabel: "✔️ ťuknite → vyberte | 🟢 zásah (🔊) | 🔴 chyba (🔊) | ● bodka",
-            balanceTitle: "💰 ZOSTATOK",
-            balanceText: "Zostatok: ",
-            betTitle: "⚡ NÁSOBITEĽ STAVKY",
-            betInfoPrefix: "⚙️ Aktuálna stavka: ",
-            betInfoUnits: " jednotiek",
-            playTypeTitle: "🎯 TYP HRY (koľko čísel)",
-            startDraw: "✨ SPUSTIŤ ŽREB",
-            reset: "🔄 RESETOVAŤ HRU",
-            topUp: "➕ Dobiť (+100)",
-            drawHeader: "🎯 ŽREB",
-            resultInfoPlaceholder: "⚡ Typ: – | Zásahov: – | Presnosť: – | Výplata: – | Výhra: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Typ: ${pt} | 🎯 Zásahov: ${hits} | 📊 Presnosť: ${acc}% | 💰 Výplata: ${payout}x | 💎 Výhra: ${win}`,
-            rulesTitle: "📖 Pravidlá hry Dozen",
-            rulesText: `<ul><li>Hra na <strong>mriežke 12×12</strong>. Každá bunka = číslo (1–12) + pozícia žrebu (1.,2.,…,12.).</li><li><strong>Typ hry:</strong> Vyberte koľko čísel (1-11).</li><li><strong>Násobiteľ stavky:</strong> 1× až 5×.</li><li><strong>Vyberte čísla:</strong> Ťuknite na bunky. Číslo sa zobrazí. Vyberte presne toľko ako váš typ.</li><li><strong>Žreb:</strong> Kliknite. Systém vygeneruje 12 náhodných čísel.</li><li><strong>Výhra:</strong> Ak sa vaše číslo zhoduje s vyžrebovaným na danej pozícii. Viac zásahov = vyšší násobiteľ.</li><li><strong>Tabuľka výplat:</strong> Plávajúce tlačidlo 📜.</li><li><strong>Zostatok:</strong> Začína na 0. Dobiť. Pri nule – smutný zvuk.</li></ul><p>Veľa šťastia! 🍀</p>`,
-            payoutModalTitle: "Tabuľka výplat",
-            playHeader: "Typ",
-            hitsHeader: "Zásahov",
-            multHeader: "Násobiteľ",
-            soundOn: "🔊 ZVUK ZAP",
-            soundOff: "🔇 ZVUK VYP",
-            payoutButton: "📜 TABUĽKA VÝPLAT",
-            rulesButton: "📖 PRAVIDLÁ",
-            alerts: { noPlayType: "Vyberte typ hry.", maxNumbers: pt=>`Môžete vybrať max ${pt} čísel.`, noBet: "Vyberte násobiteľ stavky.", wrongCount: pt=>`Vyberte presne ${pt} čísel.`, insufBalance: "Nedostatok zostatku. Dobiť.", noPlayTypeDraw: "Vyberte typ.", noBetDraw: "Vyberte násobiteľ." }
-        },
-        sl: {
-            gameTitle: "🎯 DOZEN IGRA",
-            drawLabel: "🎯 ŽREB + MREŽA 12×12",
-            infoLabel: "✔️ tapnite → izberite | 🟢 zadetek (🔊) | 🔴 zgrešek (🔊) | ● pika",
-            balanceTitle: "💰 STANJE",
-            balanceText: "Stanje: ",
-            betTitle: "⚡ MNOŽITELJ STAVKE",
-            betInfoPrefix: "⚙️ Trenutna stavka: ",
-            betInfoUnits: " enot",
-            playTypeTitle: "🎯 TIP IGRE (koliko številk)",
-            startDraw: "✨ ZAČNI ŽREB",
-            reset: "🔄 PONASTAVI IGRO",
-            topUp: "➕ Napolni (+100)",
-            drawHeader: "🎯 ŽREB",
-            resultInfoPlaceholder: "⚡ Tip: – | Zadetkov: – | Natančnost: – | Izplačilo: – | Dobitek: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Tip: ${pt} | 🎯 Zadetkov: ${hits} | 📊 Natančnost: ${acc}% | 💰 Izplačilo: ${payout}x | 💎 Dobitek: ${win}`,
-            rulesTitle: "📖 Pravila igre Dozen",
-            rulesText: `<ul><li>Igra na <strong>mreži 12×12</strong>. Vsaka celica = številka (1–12) + pozicija žreba (1.,2.,…,12.).</li><li><strong>Tip igre:</strong> Izberite koliko številk (1-11).</li><li><strong>Množitelj stavke:</strong> 1× do 5×.</li><li><strong>Izberite številke:</strong> Tapnite celice. Številka se prikaže. Izberite točno toliko kot vaš tip.</li><li><strong>Žreb:</strong> Kliknite. Sistem generira 12 naključnih številk.</li><li><strong>Zadetek:</strong> Če se vaša številka ujema z izžrebano na tej poziciji. Več zadetkov = višji množitelj.</li><li><strong>Tabela izplačil:</strong> Lebdeči gumb 📜.</li><li><strong>Stanje:</strong> Začne pri 0. Napolnite. Pri ničli – žalosten zvok.</li></ul><p>Srečno! 🍀</p>`,
-            payoutModalTitle: "Tabela izplačil",
-            playHeader: "Tip",
-            hitsHeader: "Zadetkov",
-            multHeader: "Množitelj",
-            soundOn: "🔊 ZVOK VKLJUČEN",
-            soundOff: "🔇 ZVOK IZKLJUČEN",
-            payoutButton: "📜 TABELA IZPLAČIL",
-            rulesButton: "📖 PRAVILA",
-            alerts: { noPlayType: "Izberite tip igre.", maxNumbers: pt=>`Izberete lahko največ ${pt} številk.`, noBet: "Izberite množitelj stavke.", wrongCount: pt=>`Izberite točno ${pt} številk.`, insufBalance: "Premalo stanja. Napolnite.", noPlayTypeDraw: "Izberite tip.", noBetDraw: "Izberite množitelj." }
-        },
-        es: {
-            gameTitle: "🎯 DOZEN JUEGO",
-            drawLabel: "🎯 SORTEO + TABLERO 12×12",
-            infoLabel: "✔️ toque → seleccionar | 🟢 acierto (🔊) | 🔴 fallo (🔊) | ● punto",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ MULTIPLICADOR DE APUESTA",
-            betInfoPrefix: "⚙️ Apuesta actual: ",
-            betInfoUnits: " unidades",
-            playTypeTitle: "🎯 TIPO DE JUEGO (cuántos números)",
-            startDraw: "✨ INICIAR SORTEO",
-            reset: "🔄 REINICIAR JUEGO",
-            topUp: "➕ Recargar (+100)",
-            drawHeader: "🎯 SORTEO",
-            resultInfoPlaceholder: "⚡ Tipo: – | Aciertos: – | Precisión: – | Pago: – | Ganancia: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Tipo: ${pt} | 🎯 Aciertos: ${hits} | 📊 Precisión: ${acc}% | 💰 Pago: ${payout}x | 💎 Ganancia: ${win}`,
-            rulesTitle: "📖 Reglas del Juego Dozen",
-            rulesText: `<ul><li>Se juega en una <strong>cuadrícula 12×12</strong>. Cada celda representa un número (1–12) y una posición de sorteo (1º, 2º, …, 12º).</li><li><strong>Tipo de juego:</strong> Elige cuántos números seleccionar (1 a 11).</li><li><strong>Multiplicador de apuesta:</strong> 1×, 2×, 3×, 4× o 5× – tu apuesta total.</li><li><strong>Selecciona tus números:</strong> Toca celdas. Aparecerá el número. Debes seleccionar exactamente tantos como tu tipo.</li><li><strong>Iniciar sorteo:</strong> Haz clic. El sistema genera 12 números aleatorios – uno por posición.</li><li><strong>Ganar:</strong> Coincidencia entre tu número y el sorteado en esa posición. Más aciertos, mayor multiplicador.</li><li><strong>Tabla de pagos:</strong> Botón flotante 📜 PAYOUT TABLE.</li><li><strong>Saldo:</strong> Comienza en 0. Usa Recargar. Si llega a cero, sonido triste.</li></ul><p>¡Buena suerte! 🍀</p>`,
-            payoutModalTitle: "Tabla de Pagos",
-            playHeader: "Tipo",
-            hitsHeader: "Aciertos",
-            multHeader: "Multiplicador",
-            soundOn: "🔊 SONIDO ON",
-            soundOff: "🔇 SONIDO OFF",
-            payoutButton: "📜 TABLA DE PAGOS",
-            rulesButton: "📖 REGLAS",
-            alerts: { noPlayType: "Selecciona un Tipo de juego.", maxNumbers: pt=>`Máximo ${pt} números.`, noBet: "Elige un multiplicador.", wrongCount: pt=>`Selecciona exactamente ${pt} números.`, insufBalance: "Saldo insuficiente. Recarga.", noPlayTypeDraw: "Elige un tipo.", noBetDraw: "Elige un multiplicador." }
-        },
-        sv: {
-            gameTitle: "🎯 DOZEN SPEL",
-            drawLabel: "🎯 DRAGNING + 12×12 RUTNÄT",
-            infoLabel: "✔️ tryck → välj | 🟢 träff (🔊) | 🔴 miss (🔊) | ● prick",
-            balanceTitle: "💰 SALDO",
-            balanceText: "Saldo: ",
-            betTitle: "⚡ INSATSMULTIPLIKATOR",
-            betInfoPrefix: "⚙️ Nuvarande insats: ",
-            betInfoUnits: " enheter",
-            playTypeTitle: "🎯 SPELTYP (hur många nummer)",
-            startDraw: "✨ START DRAGNING",
-            reset: "🔄 ÅTERSTÄLL SPEL",
-            topUp: "➕ Ladda upp (+100)",
-            drawHeader: "🎯 DRAGNING",
-            resultInfoPlaceholder: "⚡ Speltyp: – | Träffar: – | Precision: – | Utbetalning: – | Vinst: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Speltyp: ${pt} | 🎯 Träffar: ${hits} | 📊 Precision: ${acc}% | 💰 Utbetalning: ${payout}x | 💎 Vinst: ${win}`,
-            rulesTitle: "📖 Dozen Spelregler",
-            rulesText: `<ul><li>Spelas på ett <strong>12×12 rutnät</strong>. Varje cell representerar ett nummer (1–12) och en dragningsposition (1:a,2:a,…,12:e).</li><li><strong>Speltyp:</strong> Välj hur många nummer du vill välja (1-11).</li><li><strong>Insatsmultiplikator:</strong> 1×,2×,3×,4×,5×.</li><li><strong>Välj nummer:</strong> Tryck på celler. Numret visas. Välj exakt så många som din speltyp.</li><li><strong>Dra:</strong> Klicka. Systemet genererar 12 slumpnummer.</li><li><strong>Vinna:</strong> Om ditt nummer matchar dragna numret på den positionen. Fler träffar = högre multiplikator.</li><li><strong>Utbetalningstabell:</strong> Flytande knapp 📜.</li><li><strong>Saldo:</strong> Startar på 0. Ladda upp. Vid noll – ledsen ljud.</li></ul><p>Lycka till! 🍀</p>`,
-            payoutModalTitle: "Utbetalningstabell",
-            playHeader: "Speltyp",
-            hitsHeader: "Träffar",
-            multHeader: "Multiplikator",
-            soundOn: "🔊 LJUD PÅ",
-            soundOff: "🔇 LJUD AV",
-            payoutButton: "📜 UTBETALNINGSTABELL",
-            rulesButton: "📖 SPELREGLER",
-            alerts: { noPlayType: "Välj en speltyp först.", maxNumbers: pt=>`Du kan välja max ${pt} nummer.`, noBet: "Välj insatsmultiplikator.", wrongCount: pt=>`Välj exakt ${pt} nummer.`, insufBalance: "Otillräckligt saldo. Ladda upp.", noPlayTypeDraw: "Välj en speltyp.", noBetDraw: "Välj insatsmultiplikator." }
-        },
-        uk: {
-            gameTitle: "🎯 DOZEN ГРА",
-            drawLabel: "🎯 РОЗІГРАШ + СІТКА 12×12",
-            infoLabel: "✔️ торкніться → вибрати | 🟢 влучення (🔊) | 🔴 промах (🔊) | ● крапка",
-            balanceTitle: "💰 БАЛАНС",
-            balanceText: "Баланс: ",
-            betTitle: "⚡ МНОЖНИК СТАВКИ",
-            betInfoPrefix: "⚙️ Поточна ставка: ",
-            betInfoUnits: " одиниць",
-            playTypeTitle: "🎯 ТИП ГРИ (скільки чисел)",
-            startDraw: "✨ ПОЧАТИ РОЗІГРАШ",
-            reset: "🔄 СКИНУТИ ГРУ",
-            topUp: "➕ Поповнити (+100)",
-            drawHeader: "🎯 РОЗІГРАШ",
-            resultInfoPlaceholder: "⚡ Тип: – | Влучень: – | Точність: – | Виплата: – | Виграш: –",
-            resultInfo: (pt, hits, acc, payout, win) => `🎯 Тип: ${pt} | 🎯 Влучень: ${hits} | 📊 Точність: ${acc}% | 💰 Виплата: ${payout}x | 💎 Виграш: ${win}`,
-            rulesTitle: "📖 Правила гри Dozen",
-            rulesText: `<ul><li>Гра на <strong>сітці 12×12</strong>. Кожна клітинка = число (1–12) + позиція розіграшу (1-ша,2-га,…,12-та).</li><li><strong>Тип гри:</strong> Виберіть кількість чисел (1-11).</li><li><strong>Множник ставки:</strong> 1×,2×,3×,4×,5×.</li><li><strong>Виберіть числа:</strong> Торкніться клітинок. З’явиться число. Виберіть рівно стільки, скільки ваш тип.</li><li><strong>Розіграш:</strong> Натисніть. Система генерує 12 випадкових чисел.</li><li><strong>Виграш:</strong> Якщо ваше число збігається з розіграним на цій позиції. Більше влучень = вищий множник.</li><li><strong>Таблиця виплат:</strong> Плаваюча кнопка 📜.</li><li><strong>Баланс:</strong> Починається з 0. Поповніть. При нулі – сумний звук.</li></ul><p>Удачі! 🍀</p>`,
-            payoutModalTitle: "Таблиця виплат",
-            playHeader: "Тип",
-            hitsHeader: "Влучення",
-            multHeader: "Множник",
-            soundOn: "🔊 ЗВУК УВІМК.",
-            soundOff: "🔇 ЗВУК ВИМК.",
-            payoutButton: "📜 ТАБЛИЦЯ ВИПЛАТ",
-            rulesButton: "📖 ПРАВИЛА",
-            alerts: { noPlayType: "Виберіть тип гри.", maxNumbers: pt=>`Максимум ${pt} чисел.`, noBet: "Виберіть множник ставки.", wrongCount: pt=>`Виберіть рівно ${pt} чисел.`, insufBalance: "Недостатньо балансу. Поповніть.", noPlayTypeDraw: "Виберіть тип.", noBetDraw: "Виберіть множник." }
-        }
+        en: { gameTitle: "🎯 DOZEN GAME", drawLabel: "🎯 DRAW + 12x12 BOARD", infoLabel: "✔️ tap → select | 🟢 hit (🔊) | 🔴 miss (🔊) | ● dot", balanceTitle: "💰 BALANCE", balanceText: "Balance: ", betTitle: "⚡ BET MULTIPLIER", betInfoPrefix: "⚙️ Current bet: ", betInfoUnits: " units", playTypeTitle: "🎯 PLAY TYPE (how many numbers)", startDraw: "✨ START DRAW", reset: "🔄 RESET GAME", topUp: "➕ Top‑up (+100)", drawHeader: "🎯 DRAW", resultInfoPlaceholder: "⚡ Play type: – | Hits: – | Accuracy: – | Payout: – | Win: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Play type: ${pt} | 🎯 Hits: ${hits} | 📊 Accuracy: ${acc}% | 💰 Payout: ${payout}x | 💎 Win: ${win}`, rulesTitle: "📖 Dozen Game Rules", rulesText: `<ul><li>The game is played on a <strong>12×12 grid</strong>. Each cell represents a number (1–12) and a draw position (1st draw, 2nd draw, …, 12th draw).</li><li><strong>Play Type:</strong> Choose how many numbers you want to select (1 to 11). This is your "play type".</li><li><strong>Select a Bet Multiplier:</strong> Choose 1×, 2×, 3×, 4× or 5× – your total stake.</li><li><strong>Select your numbers:</strong> Tap on cells to select numbers. The selected number will appear in the cell. You must select exactly as many numbers as your Play Type.</li><li><strong>Start Draw:</strong> Click START DRAW. The system randomly generates 12 numbers – one for each draw position.</li><li><strong>Winning:</strong> You win if the number you selected matches the drawn number in that exact draw position. The more hits, the higher the payout multiplier.</li><li><strong>Payout Table:</strong> Click the floating 📜 PAYOUT TABLE button to see all multipliers.</li><li><strong>Balance:</strong> Your balance starts at 0. Use Top‑up to add credits. If your balance reaches zero, a sad sound will play.</li></ul><p style="margin-top:10px;">Good luck and have fun! 🍀</p>`, payoutModalTitle: "Payout Table", playHeader: "Play", hitsHeader: "Hits", multHeader: "Multiplier", soundOn: "🔊 Sound ON", soundOff: "🔇 Sound OFF", payoutButton: "📜 PAYOUT TABLE", rulesButton: "📖 GAME RULES", alerts: { noPlayType: "Please select a Play Type first.", maxNumbers: pt=>`You can select at most ${pt} numbers.`, noBet: "Please select a Bet Multiplier.", wrongCount: pt=>`You must select exactly ${pt} numbers.`, insufBalance: "Insufficient balance. Please top up.", noPlayTypeDraw: "Please choose a Play Type.", noBetDraw: "Please select a Bet Multiplier." } },
+        af: { gameTitle: "🎯 DOZEN SPEL", drawLabel: "🎯 TREKKING + 12×12 ROOSTER", infoLabel: "✔️ tik → kies | 🟢 treffer (🔊) | 🔴 mis (🔊) | ● kolletjie", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ INSET MULTIPLIKATOR", betInfoPrefix: "⚙️ Huidige inset: ", betInfoUnits: " eenhede", playTypeTitle: "🎯 SPELTIPE (hoeveel getalle)", startDraw: "✨ BEGIN TREKKING", reset: "🔄 HERSTEL SPEL", topUp: "➕ Herlaai (+100)", drawHeader: "🎯 TREKKING", resultInfoPlaceholder: "⚡ Speltipe: – | Treffers: – | Akkuraatheid: – | Uitbetaling: – | Wins: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Speltipe: ${pt} | 🎯 Treffers: ${hits} | 📊 Akkuraatheid: ${acc}% | 💰 Uitbetaling: ${payout}x | 💎 Wins: ${win}`, rulesTitle: "📖 Dozen Spelreëls", rulesText: `<ul><li>Gespeel op 'n <strong>12×12 rooster</strong>. Elke sel = getal (1–12) + trekposisie (1ste,2de,…,12de).</li><li><strong>Speltipe:</strong> Kies hoeveel getalle (1-11).</li><li><strong>Inset multiplikator:</strong> 1× tot 5×.</li><li><strong>Kies getalle:</strong> Tik op selle. Die getal verskyn. Kies presies jou speltipe.</li><li><strong>Trekk:</strong> Klik. Stelsel genereer 12 ewekansige getalle.</li><li><strong>Wen:</strong> As jou getal ooreenstem met getrekte getal op daardie posisie. Meer treffers = hoër multiplikator.</li><li><strong>Uitbetalingstabel:</strong> Drywende knoppie 📜.</li><li><strong>Saldo:</strong> Begin by 0. Herlaai. By nul – hartseer klank.</li></ul><p>Baie sterkte! 🍀</p>`, payoutModalTitle: "Uitbetalingstabel", playHeader: "Speltipe", hitsHeader: "Treffers", multHeader: "Multiplikator", soundOn: "🔊 KLANK AAN", soundOff: "🔇 KLANK AF", payoutButton: "📜 UITBETALINGSTABEL", rulesButton: "📖 SPELREËLS", alerts: { noPlayType: "Kies eers 'n speltipe.", maxNumbers: pt=>`Jy kan maksimum ${pt} getalle kies.`, noBet: "Kies 'n inset multiplikator.", wrongCount: pt=>`Kies presies ${pt} getalle.`, insufBalance: "Onvoldoende saldo. Herlaai.", noPlayTypeDraw: "Kies 'n speltipe.", noBetDraw: "Kies 'n multiplikator." } },
+        sq: { gameTitle: "🎯 LOJA DOZEN", drawLabel: "🎯 SHUFFULLIM + RRJETA 12×12", infoLabel: "✔️ prek → zgjidh | 🟢 goditje (🔊) | 🔴 gabim (🔊) | ● pikë", balanceTitle: "💰 BILANCI", balanceText: "Bilanci: ", betTitle: "⚡ SHUMËZUESI I BASTIT", betInfoPrefix: "⚙️ Basti aktual: ", betInfoUnits: " njësi", playTypeTitle: "🎯 LLOJI I LOJËS (sa numra)", startDraw: "✨ FILLO SHUFFULLIMIN", reset: "🔄 RIVENDOS LOJËN", topUp: "➕ Rimbush (+100)", drawHeader: "🎯 SHUFFULLIMI", resultInfoPlaceholder: "⚡ Lloji: – | Goditje: – | Saktësia: – | Pagesa: – | Fitimi: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Lloji: ${pt} | 🎯 Goditje: ${hits} | 📊 Saktësia: ${acc}% | 💰 Pagesa: ${payout}x | 💎 Fitimi: ${win}`, rulesTitle: "📖 Rregullat e Lojës Dozen", rulesText: `<ul><li>Loja luhet në një <strong>rrjetë 12×12</strong>. Çdo qelizë përfaqëson një numër (1–12) dhe një pozicion shuffullimi (1.,2.,…,12.).</li><li><strong>Lloji i lojës:</strong> Zgjidh sa numra (1-11).</li><li><strong>Shumëzuesi i bastit:</strong> 1× deri 5×.</li><li><strong>Zgjidh numrat:</strong> Prek qelizat. Numri do të shfaqet. Zgjidh saktësisht aq sa lloji yt.</li><li><strong>Shuffullimi:</strong> Kliko. Sistemi gjeneron 12 numra të rastit.</li><li><strong>Fitimi:</strong> Nëse numri yt përputhet me numrin e tërhequr në atë pozicion. Më shumë goditje = shumëzues më i lartë.</li><li><strong>Tabela e pagesave:</strong> Butoni lundrues 📜.</li><li><strong>Bilanci:</strong> Fillon nga 0. Rimbush. Në zero – tingull i trishtuar.</li></ul><p>Paç fat! 🍀</p>`, payoutModalTitle: "Tabela e Pagesave", playHeader: "Lloji", hitsHeader: "Goditje", multHeader: "Shumëzues", soundOn: "🔊 ZËRI NDIZUR", soundOff: "🔇 ZËRI FIKUR", payoutButton: "📜 TABELA E PAGESAVE", rulesButton: "📖 RREGULLAT", alerts: { noPlayType: "Zgjidh një lloj loje.", maxNumbers: pt=>`Mund të zgjedhësh maksimumi ${pt} numra.`, noBet: "Zgjidh shumëzuesin e bastit.", wrongCount: pt=>`Zgjidh saktësisht ${pt} numra.`, insufBalance: "Bilanci i pamjaftueshëm. Rimbush.", noPlayTypeDraw: "Zgjidh një lloj.", noBetDraw: "Zgjidh shumëzuesin." } },
+        hr: { gameTitle: "🎯 DOZEN IGRA", drawLabel: "🎯 IZVLAČENJE + MREŽA 12×12", infoLabel: "✔️ dodir → odaberi | 🟢 pogodak (🔊) | 🔴 promašaj (🔊) | ● točka", balanceTitle: "💰 STANJE", balanceText: "Stanje: ", betTitle: "⚡ MNOŽITELJ ULOGA", betInfoPrefix: "⚙️ Trenutni ulog: ", betInfoUnits: " jedinica", playTypeTitle: "🎯 TIP IGRE (koliko brojeva)", startDraw: "✨ POKRENI IZVLAČENJE", reset: "🔄 RESETIRAJ IGRU", topUp: "➕ Nadoplati (+100)", drawHeader: "🎯 IZVLAČENJE", resultInfoPlaceholder: "⚡ Tip: – | Pogodaka: – | Točnost: – | Isplata: – | Dobitak: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Tip: ${pt} | 🎯 Pogodaka: ${hits} | 📊 Točnost: ${acc}% | 💰 Isplata: ${payout}x | 💎 Dobitak: ${win}`, rulesTitle: "📖 Pravila igre Dozen", rulesText: `<ul><li>Igra se na <strong>mreži 12×12</strong>. Svaka ćelija predstavlja broj (1–12) i poziciju izvlačenja (1.,2.,…,12.).</li><li><strong>Tip igre:</strong> Odaberite koliko brojeva (1-11).</li><li><strong>Množitelj uloga:</strong> 1× do 5×.</li><li><strong>Odaberite brojeve:</strong> Dodirnite ćelije. Broj će se pojaviti. Odaberite točno onoliko koliko vaš tip.</li><li><strong>Izvlačenje:</strong> Kliknite. Sustav generira 12 slučajnih brojeva.</li><li><strong>Dobitak:</strong> Ako vaš broj odgovara izvučenom broju na toj poziciji. Više pogodaka = veći množitelj.</li><li><strong>Tablica isplate:</strong> Plutajući gumb 📜.</li><li><strong>Stanje:</strong> Počinje od 0. Nadoplatite. Na nuli – tužan zvuk.</li></ul><p>Sretno! 🍀</p>`, payoutModalTitle: "Tablica isplate", playHeader: "Tip", hitsHeader: "Pogodaka", multHeader: "Množitelj", soundOn: "🔊 ZVUK UKLJUČEN", soundOff: "🔇 ZVUK ISKLJUČEN", payoutButton: "📜 TABLICA ISPLATE", rulesButton: "📖 PRAVILA", alerts: { noPlayType: "Odaberite tip igre.", maxNumbers: pt=>`Možete odabrati max ${pt} brojeva.`, noBet: "Odaberite množitelj uloga.", wrongCount: pt=>`Odaberite točno ${pt} brojeva.`, insufBalance: "Nedovoljno stanja. Nadoplatite.", noPlayTypeDraw: "Odaberite tip.", noBetDraw: "Odaberite množitelj." } },
+        cs: { gameTitle: "🎯 DOZEN HRA", drawLabel: "🎯 LOSOVÁNÍ + MŘÍŽKA 12×12", infoLabel: "✔️ klepněte → vyberte | 🟢 zásah (🔊) | 🔴 chyba (🔊) | ● tečka", balanceTitle: "💰 ZŮSTATEK", balanceText: "Zůstatek: ", betTitle: "⚡ NÁSOBITEL VSÁZKY", betInfoPrefix: "⚙️ Aktuální sázka: ", betInfoUnits: " jednotek", playTypeTitle: "🎯 TYP HRY (kolik čísel)", startDraw: "✨ SPUSTIT LOSOVÁNÍ", reset: "🔄 RESETOVAT HRU", topUp: "➕ Dobít (+100)", drawHeader: "🎯 LOSOVÁNÍ", resultInfoPlaceholder: "⚡ Typ: – | Zásahů: – | Přesnost: – | Výplata: – | Výhra: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Typ: ${pt} | 🎯 Zásahů: ${hits} | 📊 Přesnost: ${acc}% | 💰 Výplata: ${payout}x | 💎 Výhra: ${win}`, rulesTitle: "📖 Pravidla hry Dozen", rulesText: `<ul><li>Hra na <strong>mřížce 12×12</strong>. Každá buňka = číslo (1–12) + pozice losování (1.,2.,…,12.).</li><li><strong>Typ hry:</strong> Zvolte kolik čísel (1-11).</li><li><strong>Násobitel sázky:</strong> 1× až 5×.</li><li><strong>Vyberte čísla:</strong> Klepněte na buňky. Číslo se zobrazí. Vyberte přesně tolik jako váš typ.</li><li><strong>Losování:</strong> Klikněte. Systém vygeneruje 12 náhodných čísel.</li><li><strong>Výhra:</strong> Pokud se vaše číslo shoduje s vylosovaným na dané pozici. Více zásahů = vyšší násobitel.</li><li><strong>Tabulka výplat:</strong> Plovoucí tlačítko 📜.</li><li><strong>Zůstatek:</strong> Začíná na 0. Dobijte. Při nule – smutný zvuk.</li></ul><p>Hodně štěstí! 🍀</p>`, payoutModalTitle: "Tabulka výplat", playHeader: "Typ", hitsHeader: "Zásahů", multHeader: "Násobitel", soundOn: "🔊 ZVUK ZAP", soundOff: "🔇 ZVUK VYP", payoutButton: "📜 TABULKA VÝPLAT", rulesButton: "📖 PRAVIDLA", alerts: { noPlayType: "Vyberte typ hry.", maxNumbers: pt=>`Můžete vybrat max ${pt} čísel.`, noBet: "Vyberte násobitel sázky.", wrongCount: pt=>`Vyberte přesně ${pt} čísel.`, insufBalance: "Nedostatek zůstatku. Dobijte.", noPlayTypeDraw: "Vyberte typ.", noBetDraw: "Vyberte násobitel." } },
+        da: { gameTitle: "🎯 DOZEN SPIL", drawLabel: "🎯 TRÆKNING + 12×12 GITTER", infoLabel: "✔️ tryk → vælg | 🟢 hit (🔊) | 🔴 miss (🔊) | ● prik", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ INDSTATSMULTIPLIKATOR", betInfoPrefix: "⚙️ Aktuel indsats: ", betInfoUnits: " enheder", playTypeTitle: "🎯 SPILTYPE (hvor mange tal)", startDraw: "✨ START TRÆKNING", reset: "🔄 NULSTIL SPIL", topUp: "➕ Top‑up (+100)", drawHeader: "🎯 TRÆKNING", resultInfoPlaceholder: "⚡ Spiltype: – | Hits: – | Nøjagtighed: – | Udbetaling: – | Gevinst: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Spiltype: ${pt} | 🎯 Hits: ${hits} | 📊 Nøjagtighed: ${acc}% | 💰 Udbetaling: ${payout}x | 💎 Gevinst: ${win}`, rulesTitle: "📖 Dozen Spilleregler", rulesText: `<ul><li>Spilles på et <strong>12×12 gitter</strong>. Hver celle repræsenterer et tal (1–12) og en trækningsposition (1.,2.,…,12.).</li><li><strong>Spiltype:</strong> Vælg hvor mange tal (1-11).</li><li><strong>Indsatsmultiplikator:</strong> 1× til 5×.</li><li><strong>Vælg tal:</strong> Tryk på celler. Tal vises. Vælg præcis din spiltype.</li><li><strong>Træk:</strong> Klik. Systemet genererer 12 tilfældige tal.</li><li><strong>Vind:</strong> Hvis dit tal matcher det trukne tal på den position. Flere hits = højere multiplikator.</li><li><strong>Udbetalingstabel:</strong> Flydende knap 📜.</li><li><strong>Saldo:</strong> Starter på 0. Top‑up. Nul = trist lyd.</li></ul><p>Held og lykke! 🍀</p>`, payoutModalTitle: "Udbetalingstabel", playHeader: "Spiltype", hitsHeader: "Hits", multHeader: "Multiplikator", soundOn: "🔊 LYD TIL", soundOff: "🔇 LYD FRA", payoutButton: "📜 UDBETALINGSTABEL", rulesButton: "📖 SPILLEREGLER", alerts: { noPlayType: "Vælg en spiltype først.", maxNumbers: pt=>`Du kan vælge max ${pt} tal.`, noBet: "Vælg indsatsmultiplikator.", wrongCount: pt=>`Vælg præcis ${pt} tal.`, insufBalance: "Utilstrækkelig saldo. Top‑up.", noPlayTypeDraw: "Vælg en spiltype.", noBetDraw: "Vælg indsatsmultiplikator." } },
+        nl: { gameTitle: "🎯 DOZEN SPEL", drawLabel: "🎯 TREKKING + 12×12 ROOSTER", infoLabel: "✔️ tik → selecteer | 🟢 raak (🔊) | 🔴 mis (🔊) | ● stip", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ INZET MULTIPLICATOR", betInfoPrefix: "⚙️ Huidige inzet: ", betInfoUnits: " eenheden", playTypeTitle: "🎯 SPELTYPE (hoeveel nummers)", startDraw: "✨ START TREKKING", reset: "🔄 RESET SPEL", topUp: "➕ Opladen (+100)", drawHeader: "🎯 TREKKING", resultInfoPlaceholder: "⚡ Speltype: – | Hits: – | Nauwkeurigheid: – | Uitbetaling: – | Winst: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Speltype: ${pt} | 🎯 Hits: ${hits} | 📊 Nauwkeurigheid: ${acc}% | 💰 Uitbetaling: ${payout}x | 💎 Winst: ${win}`, rulesTitle: "📖 Dozen Spelregels", rulesText: `<ul><li>Gespeeld op een <strong>12×12 rooster</strong>. Elke cel = nummer (1–12) + trekpositie (1e,2e,…,12e).</li><li><strong>Speltype:</strong> Kies hoeveel nummers (1-11).</li><li><strong>Inzet multiplicator:</strong> 1× tot 5×.</li><li><strong>Selecteer nummers:</strong> Tik op cellen. Het nummer verschijnt. Selecteer exact je speltype.</li><li><strong>Trekking:</strong> Klik. Systeem genereert 12 willekeurige nummers.</li><li><strong>Winnen:</strong> Als jouw nummer overeenkomt met getrokken nummer op die positie. Meer hits = hogere multiplicator.</li><li><strong>Uitbetalingstabel:</strong> Zwevende knop 📜.</li><li><strong>Saldo:</strong> Start op 0. Opladen. Bij nul – treurig geluid.</li></ul><p>Veel succes! 🍀</p>`, payoutModalTitle: "Uitbetalingstabel", playHeader: "Speltype", hitsHeader: "Hits", multHeader: "Multiplicator", soundOn: "🔊 GELUID AAN", soundOff: "🔇 GELUID UIT", payoutButton: "📜 UITBETALINGSTABEL", rulesButton: "📖 SPELREGELS", alerts: { noPlayType: "Selecteer eerst een speltype.", maxNumbers: pt=>`Je kunt maximaal ${pt} nummers selecteren.`, noBet: "Kies een inzet multiplicator.", wrongCount: pt=>`Selecteer exact ${pt} nummers.`, insufBalance: "Onvoldoende saldo. Opladen.", noPlayTypeDraw: "Kies een speltype.", noBetDraw: "Kies een multiplicator." } },
+        fi: { gameTitle: "🎯 DOZEN PELI", drawLabel: "🎯 ARVONTA + 12×12 RUUDUKKO", infoLabel: "✔️ napauta → valitse | 🟢 osuma (🔊) | 🔴 huti (🔊) | ● piste", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ PANOSTUSKERROIN", betInfoPrefix: "⚙️ Nykyinen panos: ", betInfoUnits: " yksikköä", playTypeTitle: "🎯 PELITYYPPI (kuinka monta numeroa)", startDraw: "✨ ALOITA ARVONTA", reset: "🔄 NOLLAA PELI", topUp: "➕ Lataa (+100)", drawHeader: "🎯 ARVONTA", resultInfoPlaceholder: "⚡ Pelityyppi: – | Osumat: – | Tarkkuus: – | Voittokerroin: – | Voitto: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Pelityyppi: ${pt} | 🎯 Osumat: ${hits} | 📊 Tarkkuus: ${acc}% | 💰 Voittokerroin: ${payout}x | 💎 Voitto: ${win}`, rulesTitle: "📖 Dozen Pelisäännöt", rulesText: `<ul><li>Pelataan <strong>12×12 ruudukolla</strong>. Jokainen solu edustaa numeroa (1–12) ja arvontapositiota (1.,2.,…,12.).</li><li><strong>Pelityyppi:</strong> Valitse kuinka monta numeroa (1-11).</li><li><strong>Panostuskerroin:</strong> 1×,2×,3×,4×,5×.</li><li><strong>Valitse numerot:</strong> Napauta soluja. Numero näkyy. Valitse täsmälleen pelityyppisi verran.</li><li><strong>Arvo:</strong> Klikkaa. Järjestelmä arpoo 12 satunnaista numeroa.</li><li><strong>Voita:</strong> Jos valitsemasi numero vastaa arvottua numeroa kyseisessä positiossa. Enemmän osumia = korkeampi kerroin.</li><li><strong>Voittotaulukko:</strong> Kelluva painike 📜.</li><li><strong>Saldo:</strong> Alkaa 0:sta. Lataa. Jos nolla, surullinen ääni.</li></ul><p>Onnea peliin! 🍀</p>`, payoutModalTitle: "Voittotaulukko", playHeader: "Pelityyppi", hitsHeader: "Osumat", multHeader: "Kerroin", soundOn: "🔊 ÄÄNI PÄÄLLE", soundOff: "🔇 ÄÄNI POIS", payoutButton: "📜 VOITTOTAULUKKO", rulesButton: "📖 SÄÄNNÖT", alerts: { noPlayType: "Valitse pelityyppi ensin.", maxNumbers: pt=>`Voit valita enintään ${pt} numeroa.`, noBet: "Valitse panostuskerroin.", wrongCount: pt=>`Valitse täsmälleen ${pt} numeroa.`, insufBalance: "Liian vähän saldoa. Lataa.", noPlayTypeDraw: "Valitse pelityyppi.", noBetDraw: "Valitse panostuskerroin." } },
+        fr: { gameTitle: "🎯 DOZEN JEU", drawLabel: "🎯 TIRAGE + GRILLE 12×12", infoLabel: "✔️ appuyer → sélectionner | 🟢 coup (🔊) | 🔴 échec (🔊) | ● point", balanceTitle: "💰 SOLDE", balanceText: "Solde: ", betTitle: "⚡ MULTIPLICATEUR DE MISE", betInfoPrefix: "⚙️ Mise actuelle: ", betInfoUnits: " unités", playTypeTitle: "🎯 TYPE DE JEU (combien de numéros)", startDraw: "✨ LANCER LE TIRAGE", reset: "🔄 RÉINITIALISER", topUp: "➕ Recharger (+100)", drawHeader: "🎯 TIRAGE", resultInfoPlaceholder: "⚡ Type: – | Coups: – | Précision: – | Gain: – | Victoire: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Type: ${pt} | 🎯 Coups: ${hits} | 📊 Précision: ${acc}% | 💰 Gain: ${payout}x | 💎 Victoire: ${win}`, rulesTitle: "📖 Règles du Jeu Dozen", rulesText: `<ul><li>Grille <strong>12×12</strong>. Chaque case = numéro (1–12) + position de tirage (1er,…,12ème).</li><li><strong>Type:</strong> Choisissez combien de numéros (1-11).</li><li><strong>Multiplicateur:</strong> 1× à 5×.</li><li><strong>Sélectionnez:</strong> Appuyez sur les cases. Le numéro apparaît. Sélectionnez exactement votre type.</li><li><strong>Tirer:</strong> Cliquez. Le système génère 12 numéros aléatoires.</li><li><strong>Gagner:</strong> Si votre numéro correspond au tirage à cette position. Plus de coups = multiplicateur plus élevé.</li><li><strong>Tableau des gains:</strong> Bouton flottant 📜.</li><li><strong>Solde:</strong> Démarre à 0. Rechargez. À zéro, son triste.</li></ul><p>Bonne chance! 🍀</p>`, payoutModalTitle: "Tableau des Gains", playHeader: "Type", hitsHeader: "Coups", multHeader: "Multiplicateur", soundOn: "🔊 SON ON", soundOff: "🔇 SON OFF", payoutButton: "📜 TABLEAU DES GAINS", rulesButton: "📖 RÈGLES", alerts: { noPlayType: "Choisissez un type.", maxNumbers: pt=>`Maximum ${pt} numéros.`, noBet: "Choisissez multiplicateur.", wrongCount: pt=>`Sélectionnez exactement ${pt} numéros.`, insufBalance: "Solde insuffisant. Rechargez.", noPlayTypeDraw: "Choisissez un type.", noBetDraw: "Choisissez multiplicateur." } },
+        de: { gameTitle: "🎯 DOZEN SPIEL", drawLabel: "🎯 ZIEHUNG + 12×12 FELD", infoLabel: "✔️ tippen → auswählen | 🟢 Treffer (🔊) | 🔴 Fehl (🔊) | ● Punkt", balanceTitle: "💰 KONTOSTAND", balanceText: "Kontostand: ", betTitle: "⚡ EINSATZ MULTIPLIKATOR", betInfoPrefix: "⚙️ Aktueller Einsatz: ", betInfoUnits: " Einheiten", playTypeTitle: "🎯 SPIELTYP (wie viele Zahlen)", startDraw: "✨ ZIEHUNG STARTEN", reset: "🔄 SPIEL ZURÜCKSETZEN", topUp: "➕ Aufladen (+100)", drawHeader: "🎯 ZIEHUNG", resultInfoPlaceholder: "⚡ Spieltyp: – | Treffer: – | Genauigkeit: – | Auszahlung: – | Gewinn: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Spieltyp: ${pt} | 🎯 Treffer: ${hits} | 📊 Genauigkeit: ${acc}% | 💰 Auszahlung: ${payout}x | 💎 Gewinn: ${win}`, rulesTitle: "📖 Dozen Spielregeln", rulesText: `<ul><li>Das Spiel wird auf einem <strong>12×12-Raster</strong> gespielt. Jede Zelle repräsentiert eine Zahl (1–12) und eine Ziehposition (1. Ziehung, 2. Ziehung, …, 12. Ziehung).</li><li><strong>Spieltyp:</strong> Wähle, wie viele Zahlen du auswählen möchtest (1 bis 11). Das ist dein "Spieltyp".</li><li><strong>Wähle einen Einsatz-Multiplikator:</strong> 1×, 2×, 3×, 4× oder 5× – dein Gesamteinsatz.</li><li><strong>Zahlen auswählen:</strong> Tippe auf Zellen, um Zahlen auszuwählen. Du musst genau so viele Zahlen auswählen wie dein Spieltyp vorgibt.</li><li><strong>Ziehung starten:</strong> Klicke auf ZIEHUNG STARTEN. Das System generiert zufällig 12 Zahlen – eine für jede Ziehposition.</li><li><strong>Gewinnen:</strong> Du gewinnst, wenn deine ausgewählte Zahl mit der gezogenen Zahl an genau dieser Ziehposition übereinstimmt. Je mehr Treffer, desto höher der Auszahlungsmultiplikator.</li><li><strong>Auszahlungstabelle:</strong> Klicke auf die schwebende Schaltfläche 📜 PAYOUT TABLE, um alle Multiplikatoren zu sehen.</li><li><strong>Kontostand:</strong> Dein Kontostand beginnt bei 0. Verwende Aufladen, um Guthaben hinzuzufügen. Wenn dein Kontostand Null erreicht, ertönt ein trauriger Ton.</li></ul><p>Viel Glück und viel Spaß! 🍀</p>`, payoutModalTitle: "Auszahlungstabelle", playHeader: "Spieltyp", hitsHeader: "Treffer", multHeader: "Multiplikator", soundOn: "🔊 TON EIN", soundOff: "🔇 TON AUS", payoutButton: "📜 AUSZAHLUNGSTABELLE", rulesButton: "📖 SPIELREGELN", alerts: { noPlayType: "Bitte wähle zuerst einen Spieltyp aus.", maxNumbers: pt=>`Du kannst maximal ${pt} Zahlen auswählen.`, noBet: "Bitte wähle einen Einsatz-Multiplikator.", wrongCount: pt=>`Du musst genau ${pt} Zahlen auswählen.`, insufBalance: "Nicht genug Guthaben. Bitte lade auf.", noPlayTypeDraw: "Bitte wähle einen Spieltyp.", noBetDraw: "Bitte wähle einen Einsatz-Multiplikator." } },
+        el: { gameTitle: "🎯 DOZEN ΠΑΙΧΝΙΔΙ", drawLabel: "🎯 ΚΛΗΡΩΣΗ + ΠΛΕΓΜΑ 12×12", infoLabel: "✔️ πατήστε → επιλέξτε | 🟢 επιτυχία (🔊) | 🔴 αποτυχία (🔊) | ● τελεία", balanceTitle: "💰 ΥΠΟΛΟΙΠΟ", balanceText: "Υπόλοιπο: ", betTitle: "⚡ ΠΟΛΛΑΠΛΑΣΙΑΣΤΗΣ ΣΤΟΙΧΗΜΑΤΟΣ", betInfoPrefix: "⚙️ Τρέχον στοίχημα: ", betInfoUnits: " μονάδες", playTypeTitle: "🎯 ΤΥΠΟΣ ΠΑΙΧΝΙΔΙΟΥ (πόσους αριθμούς)", startDraw: "✨ ΕΝΑΡΞΗ ΚΛΗΡΩΣΗΣ", reset: "🔄 ΕΠΑΝΑΦΟΡΑ ΠΑΙΧΝΙΔΙΟΥ", topUp: "➕ Φόρτωση (+100)", drawHeader: "🎯 ΚΛΗΡΩΣΗ", resultInfoPlaceholder: "⚡ Τύπος: – | Επιτυχίες: – | Ακρίβεια: – | Πληρωμή: – | Κέρδος: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Τύπος: ${pt} | 🎯 Επιτυχίες: ${hits} | 📊 Ακρίβεια: ${acc}% | 💰 Πληρωμή: ${payout}x | 💎 Κέρδος: ${win}`, rulesTitle: "📖 Κανόνες Παιχνιδιού Dozen", rulesText: `<ul><li>Παιχνίδι σε <strong>πλέγμα 12×12</strong>. Κάθε κελί = αριθμός (1–12) + θέση κλήρωσης (1η,2η,…,12η).</li><li><strong>Τύπος:</strong> Επιλέξτε πόσους αριθμούς (1-11).</li><li><strong>Πολλαπλασιαστής στοιχήματος:</strong> 1× έως 5×.</li><li><strong>Επιλέξτε αριθμούς:</strong> Πατήστε κελιά. Θα εμφανιστεί ο αριθμός. Επιλέξτε ακριβώς όσους ο τύπος σας.</li><li><strong>Κλήρωση:</strong> Κλικ. Το σύστημα παράγει 12 τυχαίους αριθμούς.</li><li><strong>Νίκη:</strong> Αν ο αριθμός σας ταιριάζει με τον κληρωθέντα σε αυτή τη θέση. Περισσότερες επιτυχίες = υψηλότερος πολλαπλασιαστής.</li><li><strong>Πίνακας πληρωμών:</strong> Πλωτό κουμπί 📜.</li><li><strong>Υπόλοιπο:</strong> Ξεκινά από 0. Φόρτωση. Στο μηδέν – λυπηρός ήχος.</li></ul><p>Καλή τύχη! 🍀</p>`, payoutModalTitle: "Πίνακας Πληρωμών", playHeader: "Τύπος", hitsHeader: "Επιτυχίες", multHeader: "Πολλαπλασιαστής", soundOn: "🔊 ΗΧΟΣ ON", soundOff: "🔇 ΗΧΟΣ OFF", payoutButton: "📜 ΠΙΝΑΚΑΣ ΠΛΗΡΩΜΩΝ", rulesButton: "📖 ΚΑΝΟΝΕΣ", alerts: { noPlayType: "Επιλέξτε τύπο παιχνιδιού.", maxNumbers: pt=>`Μπορείτε να επιλέξετε έως ${pt} αριθμούς.`, noBet: "Επιλέξτε πολλαπλασιαστή στοιχήματος.", wrongCount: pt=>`Επιλέξτε ακριβώς ${pt} αριθμούς.`, insufBalance: "Ανεπαρκές υπόλοιπο. Φορτώστε.", noPlayTypeDraw: "Επιλέξτε τύπο.", noBetDraw: "Επιλέξτε πολλαπλασιαστή." } },
+        hu: { gameTitle: "🎯 DOZEN JÁTÉK", drawLabel: "🎯 HÚZÁS + 12×12 TÁBLA", infoLabel: "✔️ koppints → kijelölés | 🟢 találat (🔊) | 🔴 tévesztés (🔊) | ● pont", balanceTitle: "💰 EGYENLEG", balanceText: "Egyenleg: ", betTitle: "⚡ TÉT SZORZÓ", betInfoPrefix: "⚙️ Jelenlegi tét: ", betInfoUnits: " egység", playTypeTitle: "🎯 JÁTÉK TÍPUS (hány számot választasz)", startDraw: "✨ HÚZÁS INDIÍTÁSA", reset: "🔄 JÁTÉK VISSZAÁLLÍTÁSA", topUp: "➕ Feltöltés (+100)", drawHeader: "🎯 HÚZÁS", resultInfoPlaceholder: "⚡ Játéktípus: – | Találatok: – | Pontosság: – | Kifizetés: – | Nyeremény: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Játéktípus: ${pt} | 🎯 Találatok: ${hits} | 📊 Pontosság: ${acc}% | 💰 Kifizetés: ${payout}x | 💎 Nyeremény: ${win}`, rulesTitle: "📖 Dozen Játékszabályok", rulesText: `<ul><li>A játék egy <strong>12×12-es táblán</strong> zajlik. Minden cella egy számot (1–12) és egy húzási pozíciót (1. húzás, 2. húzás, …, 12. húzás) képvisel.</li><li><strong>Játéktípus:</strong> Válaszd ki, hány számot szeretnél megjelölni (1 és 11 között). Ez a te "játéktípusod".</li><li><strong>Válassz tét szorzót:</strong> 1×, 2×, 3×, 4× vagy 5× – a teljes téthez.</li><li><strong>Számok kiválasztása:</strong> Koppints a cellákra a számok kijelöléséhez. Pontosan annyi számot kell kijelölnöd, amennyi a játéktípusod.</li><li><strong>Húzás indítása:</strong> Kattints a HÚZÁS INDIÍTÁSA gombra. A rendszer véletlenszerűen generál 12 számot – minden húzási pozícióhoz egyet.</li><li><strong>Nyereség:</strong> Akkor nyersz, ha a kiválasztott számod megegyezik a kisorsolt számmal az adott húzási pozícióban. Minél több találatod van, annál magasabb a nyereményszorzó.</li><li><strong>Kifizetési tábla:</strong> Kattints a lebegő 📜 PAYOUT TABLE gombra a szorzók megtekintéséhez.</li><li><strong>Egyenleg:</strong> Az egyenleged 0-ról indul. Használd a Feltöltés gombot a feltöltéshez. Ha az egyenleged eléri a nullát, egy szomorú hang szólal meg.</li></ul><p>Sok szerencsét és jó szórakozást! 🍀</p>`, payoutModalTitle: "Kifizetési tábla", playHeader: "Játéktípus", hitsHeader: "Találat", multHeader: "Szorzó", soundOn: "🔊 HANG BE", soundOff: "🔇 HANG KI", payoutButton: "📜 KIFIZETÉSI TÁBLA", rulesButton: "📖 JÁTÉKSZABÁLYOK", alerts: { noPlayType: "Kérlek, válassz játéktípust!", maxNumbers: pt=>`Legfeljebb ${pt} számot választhatsz.`, noBet: "Kérlek, válassz tét szorzót!", wrongCount: pt=>`Pontosan ${pt} számot kell kiválasztanod.`, insufBalance: "Nincs elegendő egyenleg. Tölts fel!", noPlayTypeDraw: "Kérlek, válassz játéktípust!", noBetDraw: "Kérlek, válassz tét szorzót!" } },
+        it: { gameTitle: "🎯 DOZEN GIOCO", drawLabel: "🎯 ESTRAZIONE + GRIGLIA 12×12", infoLabel: "✔️ tocca → seleziona | 🟢 colpo (🔊) | 🔴 sbaglio (🔊) | ● punto", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ MOLTIPLICATORE PUNTATA", betInfoPrefix: "⚙️ Puntata attuale: ", betInfoUnits: " unità", playTypeTitle: "🎯 TIPO DI GIOCO (quanti numeri)", startDraw: "✨ INIZIA ESTRAZIONE", reset: "🔄 RESET GIOCO", topUp: "➕ Ricarica (+100)", drawHeader: "🎯 ESTRAZIONE", resultInfoPlaceholder: "⚡ Tipo: – | Colpi: – | Precisione: – | Pagamento: – | Vincita: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Tipo: ${pt} | 🎯 Colpi: ${hits} | 📊 Precisione: ${acc}% | 💰 Pagamento: ${payout}x | 💎 Vincita: ${win}`, rulesTitle: "📖 Regole del Gioco Dozen", rulesText: `<ul><li>Griglia <strong>12×12</strong>. Ogni cella: numero (1–12) e posizione estrazione (1ª,2ª,…,12ª).</li><li><strong>Tipo:</strong> Scegli quanti numeri (1-11).</li><li><strong>Moltiplicatore:</strong> 1×,2×,3×,4×,5×.</li><li><strong>Seleziona:</strong> Tocca celle. Il numero appare. Seleziona esattamente il tuo tipo.</li><li><strong>Estrai:</strong> Clic. Sistema genera 12 numeri casuali.</li><li><strong>Vinci:</strong> Se il tuo numero coincide con l’estratto in quella posizione. Più colpi, più alto il moltiplicatore.</li><li><strong>Tabella pagamenti:</strong> Pulsante flottante 📜.</li><li><strong>Saldo:</strong> Parte da 0. Ricarica. A zero suono triste.</li></ul><p>Buona fortuna! 🍀</p>`, payoutModalTitle: "Tabella Pagamenti", playHeader: "Tipo", hitsHeader: "Colpi", multHeader: "Moltiplicatore", soundOn: "🔊 SUONO ON", soundOff: "🔇 SUONO OFF", payoutButton: "📜 TABELLA PAGAMENTI", rulesButton: "📖 REGOLE", alerts: { noPlayType: "Seleziona un tipo.", maxNumbers: pt=>`Massimo ${pt} numeri.`, noBet: "Scegli moltiplicatore.", wrongCount: pt=>`Seleziona esattamente ${pt} numeri.`, insufBalance: "Saldo insufficiente. Ricarica.", noPlayTypeDraw: "Scegli un tipo.", noBetDraw: "Scegli moltiplicatore." } },
+        no: { gameTitle: "🎯 DOZEN SPILL", drawLabel: "🎯 TREKNING + 12×12 RUTENETT", infoLabel: "✔️ trykk → velg | 🟢 treff (🔊) | 🔴 bom (🔊) | ● prikk", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ INNSATSMULTIPLIKATOR", betInfoPrefix: "⚙️ Gjeldende innsats: ", betInfoUnits: " enheter", playTypeTitle: "🎯 SPILLTYPE (hvor mange tall)", startDraw: "✨ START TREKNING", reset: "🔄 TILBAKESTILL SPILL", topUp: "➕ Topp opp (+100)", drawHeader: "🎯 TREKNING", resultInfoPlaceholder: "⚡ Spilltype: – | Treff: – | Nøyaktighet: – | Utbetaling: – | Gevinst: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Spilltype: ${pt} | 🎯 Treff: ${hits} | 📊 Nøyaktighet: ${acc}% | 💰 Utbetaling: ${payout}x | 💎 Gevinst: ${win}`, rulesTitle: "📖 Dozen Spilleregler", rulesText: `<ul><li>Spilles på et <strong>12×12 rutenett</strong>. Hver celle representerer et tall (1–12) og en trekningsposisjon (1.,2.,…,12.).</li><li><strong>Spilltype:</strong> Velg hvor mange tall (1-11).</li><li><strong>Innsatsmultiplikator:</strong> 1× til 5×.</li><li><strong>Velg tall:</strong> Trykk på celler. Tallet vises. Velg nøyaktig din spilltype.</li><li><strong>Trekk:</strong> Klikk. Systemet genererer 12 tilfeldige tall.</li><li><strong>Vinn:</strong> Hvis tallet ditt matcher det trukne tallet på den posisjonen. Flere treff = høyere multiplikator.</li><li><strong>Utbetalingstabell:</strong> Flytende knapp 📜.</li><li><strong>Saldo:</strong> Starter på 0. Topp opp. Ved null – trist lyd.</li></ul><p>Lykke til! 🍀</p>`, payoutModalTitle: "Utbetalingstabell", playHeader: "Spilltype", hitsHeader: "Treff", multHeader: "Multiplikator", soundOn: "🔊 LYD PÅ", soundOff: "🔇 LYD AV", payoutButton: "📜 UTBETALINGSTABELL", rulesButton: "📖 SPILLEREGLER", alerts: { noPlayType: "Velg en spilltype først.", maxNumbers: pt=>`Du kan velge maks ${pt} tall.`, noBet: "Velg innsatsmultiplikator.", wrongCount: pt=>`Velg nøyaktig ${pt} tall.`, insufBalance: "Utilstrekkelig saldo. Topp opp.", noPlayTypeDraw: "Velg en spilltype.", noBetDraw: "Velg innsatsmultiplikator." } },
+        pl: { gameTitle: "🎯 DOZEN GRA", drawLabel: "🎯 LOSOWANIE + SIATKA 12×12", infoLabel: "✔️ dotknij → wybierz | 🟢 trafienie (🔊) | 🔴 pudło (🔊) | ● kropka", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ MNOŻNIK ZAKŁADU", betInfoPrefix: "⚙️ Bieżący zakład: ", betInfoUnits: " jednostek", playTypeTitle: "🎯 TYP GRY (ile liczb)", startDraw: "✨ ROZPOCZNIJ LOSOWANIE", reset: "🔄 RESETUJ GRĘ", topUp: "➕ Doładuj (+100)", drawHeader: "🎯 LOSOWANIE", resultInfoPlaceholder: "⚡ Typ: – | Trafień: – | Dokładność: – | Wypłata: – | Wygrana: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Typ: ${pt} | 🎯 Trafień: ${hits} | 📊 Dokładność: ${acc}% | 💰 Wypłata: ${payout}x | 💎 Wygrana: ${win}`, rulesTitle: "📖 Zasady gry Dozen", rulesText: `<ul><li>Gra na <strong>siatce 12×12</strong>. Każda komórka = liczba (1–12) + pozycja losowania (1.,2.,…,12.).</li><li><strong>Typ gry:</strong> Wybierz ile liczb (1-11).</li><li><strong>Mnożnik zakładu:</strong> 1× do 5×.</li><li><strong>Wybierz liczby:</strong> Dotknij komórek. Liczba się pojawi. Wybierz dokładnie tyle ile twój typ.</li><li><strong>Losowanie:</strong> Kliknij. System generuje 12 losowych liczb.</li><li><strong>Wygrana:</strong> Jeśli twoja liczba zgadza się z wylosowaną na tej pozycji. Więcej trafień = wyższy mnożnik.</li><li><strong>Tabela wypłat:</strong> Pływający przycisk 📜.</li><li><strong>Saldo:</strong> Zaczyna się od 0. Doładuj. Przy zerze – smutny dźwięk.</li></ul><p>Powodzenia! 🍀</p>`, payoutModalTitle: "Tabela wypłat", playHeader: "Typ", hitsHeader: "Trafień", multHeader: "Mnożnik", soundOn: "🔊 DŹWIĘK WŁ.", soundOff: "🔇 DŹWIĘK WYŁ.", payoutButton: "📜 TABELA WYPŁAT", rulesButton: "📖 ZASADY", alerts: { noPlayType: "Wybierz typ gry.", maxNumbers: pt=>`Możesz wybrać max ${pt} liczb.`, noBet: "Wybierz mnożnik zakładu.", wrongCount: pt=>`Wybierz dokładnie ${pt} liczb.`, insufBalance: "Niewystarczające saldo. Doładuj.", noPlayTypeDraw: "Wybierz typ.", noBetDraw: "Wybierz mnożnik." } },
+        pt: { gameTitle: "🎯 DOZEN JOGO", drawLabel: "🎯 SORTEIO + GRADE 12×12", infoLabel: "✔️ toque → selecionar | 🟢 acerto (🔊) | 🔴 erro (🔊) | ● ponto", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ MULTIPLICADOR DE APOSTA", betInfoPrefix: "⚙️ Aposta atual: ", betInfoUnits: " unidades", playTypeTitle: "🎯 TIPO DE JOGO (quantos números)", startDraw: "✨ INICIAR SORTEIO", reset: "🔄 REINICIAR JOGO", topUp: "➕ Recarregar (+100)", drawHeader: "🎯 SORTEIO", resultInfoPlaceholder: "⚡ Tipo: – | Acertos: – | Precisão: – | Pagamento: – | Ganho: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Tipo: ${pt} | 🎯 Acertos: ${hits} | 📊 Precisão: ${acc}% | 💰 Pagamento: ${payout}x | 💎 Ganho: ${win}`, rulesTitle: "📖 Regras do Jogo Dozen", rulesText: `<ul><li>Grade <strong>12×12</strong>. Cada célula: número (1–12) e posição (1º sorteio,…).</li><li><strong>Tipo:</strong> Escolha quantos números (1-11).</li><li><strong>Multiplicador:</strong> 1× a 5×.</li><li><strong>Selecione:</strong> Toque nas células. O número aparecerá. Selecione exatamente o seu tipo.</li><li><strong>Sortear:</strong> Clique. Sistema gera 12 números aleatórios.</li><li><strong>Ganhar:</strong> Se o número selecionado coincidir com o sorteado na posição exata. Mais acertos, maior multiplicador.</li><li><strong>Tabela de pagamentos:</strong> Botão flutuante 📜.</li><li><strong>Saldo:</strong> Começa em 0. Recarregue. Se zero, som triste.</li></ul><p>Boa sorte! 🍀</p>`, payoutModalTitle: "Tabela de Pagamentos", playHeader: "Tipo", hitsHeader: "Acertos", multHeader: "Multiplicador", soundOn: "🔊 SOM ON", soundOff: "🔇 SOM OFF", payoutButton: "📜 TABELA DE PAGAMENTOS", rulesButton: "📖 REGRAS", alerts: { noPlayType: "Selecione um tipo.", maxNumbers: pt=>`Máximo ${pt} números.`, noBet: "Escolha multiplicador.", wrongCount: pt=>`Selecione exatamente ${pt} números.`, insufBalance: "Saldo insuficiente. Recarregue.", noPlayTypeDraw: "Escolha um tipo.", noBetDraw: "Escolha multiplicador." } },
+        sr: { gameTitle: "🎯 DOZEN IGRA", drawLabel: "🎯 IZVLАČENJE + MREŽA 12×12", infoLabel: "✔️ dodir → izaberi | 🟢 pogodak (🔊) | 🔴 promašaj (🔊) | ● tačka", balanceTitle: "💰 STANJE", balanceText: "Stanje: ", betTitle: "⚡ MNOŽITELJ ULOGA", betInfoPrefix: "⚙️ Trenutni ulog: ", betInfoUnits: " jedinica", playTypeTitle: "🎯 TIP IGRE (koliko brojeva)", startDraw: "✨ POKRENI IZVLAČENJE", reset: "🔄 RESETUJ IGRU", topUp: "➕ Dopuni (+100)", drawHeader: "🎯 IZVLAČENJE", resultInfoPlaceholder: "⚡ Tip: – | Pogodaka: – | Tačnost: – | Isplata: – | Dobitak: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Tip: ${pt} | 🎯 Pogodaka: ${hits} | 📊 Tačnost: ${acc}% | 💰 Isplata: ${payout}x | 💎 Dobitak: ${win}`, rulesTitle: "📖 Pravila igre Dozen", rulesText: `<ul><li>Igra na <strong>mreži 12×12</strong>. Svaka ćelija = broj (1–12) + pozicija izvlačenja (1.,2.,…,12.).</li><li><strong>Tip igre:</strong> Odaberi koliko brojeva (1-11).</li><li><strong>Množitelj uloga:</strong> 1× do 5×.</li><li><strong>Izaberi brojeve:</strong> Dodirni ćelije. Broj će se pojaviti. Izaberi tačno svoj tip.</li><li><strong>Izvlačenje:</strong> Klikni. Sistem generiše 12 slučajnih brojeva.</li><li><strong>Pobeda:</strong> Ako tvoj broj odgovara izvučenom na toj poziciji. Više pogodaka = veći množitelj.</li><li><strong>Tabela isplate:</strong> Plutajuće dugme 📜.</li><li><strong>Stanje:</strong> Počinje od 0. Dopuni. Na nuli – tužan zvuk.</li></ul><p>Srećno! 🍀</p>`, payoutModalTitle: "Tabela isplate", playHeader: "Tip", hitsHeader: "Pogodaka", multHeader: "Množitelj", soundOn: "🔊 ZVUK UKLJUČEN", soundOff: "🔇 ZVUK ISKLJUČEN", payoutButton: "📜 TABELA ISPLATE", rulesButton: "📖 PRAVILA", alerts: { noPlayType: "Izaberi tip igre.", maxNumbers: pt=>`Maksimalno ${pt} brojeva.`, noBet: "Izaberi množitelj uloga.", wrongCount: pt=>`Izaberi tačno ${pt} brojeva.`, insufBalance: "Nedovoljno stanja. Dopuni.", noPlayTypeDraw: "Izaberi tip.", noBetDraw: "Izaberi množitelj." } },
+        sk: { gameTitle: "🎯 DOZEN HRA", drawLabel: "🎯 ŽREB + MREŽA 12×12", infoLabel: "✔️ ťuknite → vyberte | 🟢 zásah (🔊) | 🔴 chyba (🔊) | ● bodka", balanceTitle: "💰 ZOSTATOK", balanceText: "Zostatok: ", betTitle: "⚡ NÁSOBITEĽ STAVKY", betInfoPrefix: "⚙️ Aktuálna stavka: ", betInfoUnits: " jednotiek", playTypeTitle: "🎯 TYP HRY (koľko čísel)", startDraw: "✨ SPUSTIŤ ŽREB", reset: "🔄 RESETOVAŤ HRU", topUp: "➕ Dobiť (+100)", drawHeader: "🎯 ŽREB", resultInfoPlaceholder: "⚡ Typ: – | Zásahov: – | Presnosť: – | Výplata: – | Výhra: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Typ: ${pt} | 🎯 Zásahov: ${hits} | 📊 Presnosť: ${acc}% | 💰 Výplata: ${payout}x | 💎 Výhra: ${win}`, rulesTitle: "📖 Pravidlá hry Dozen", rulesText: `<ul><li>Hra na <strong>mriežke 12×12</strong>. Každá bunka = číslo (1–12) + pozícia žrebu (1.,2.,…,12.).</li><li><strong>Typ hry:</strong> Vyberte koľko čísel (1-11).</li><li><strong>Násobiteľ stavky:</strong> 1× až 5×.</li><li><strong>Vyberte čísla:</strong> Ťuknite na bunky. Číslo sa zobrazí. Vyberte presne toľko ako váš typ.</li><li><strong>Žreb:</strong> Kliknite. Systém vygeneruje 12 náhodných čísel.</li><li><strong>Výhra:</strong> Ak sa vaše číslo zhoduje s vyžrebovaným na danej pozícii. Viac zásahov = vyšší násobiteľ.</li><li><strong>Tabuľka výplat:</strong> Plávajúce tlačidlo 📜.</li><li><strong>Zostatok:</strong> Začína na 0. Dobiť. Pri nule – smutný zvuk.</li></ul><p>Veľa šťastia! 🍀</p>`, payoutModalTitle: "Tabuľka výplat", playHeader: "Typ", hitsHeader: "Zásahov", multHeader: "Násobiteľ", soundOn: "🔊 ZVUK ZAP", soundOff: "🔇 ZVUK VYP", payoutButton: "📜 TABUĽKA VÝPLAT", rulesButton: "📖 PRAVIDLÁ", alerts: { noPlayType: "Vyberte typ hry.", maxNumbers: pt=>`Môžete vybrať max ${pt} čísel.`, noBet: "Vyberte násobiteľ stavky.", wrongCount: pt=>`Vyberte presne ${pt} čísel.`, insufBalance: "Nedostatok zostatku. Dobiť.", noPlayTypeDraw: "Vyberte typ.", noBetDraw: "Vyberte násobiteľ." } },
+        sl: { gameTitle: "🎯 DOZEN IGRA", drawLabel: "🎯 ŽREB + MREŽA 12×12", infoLabel: "✔️ tapnite → izberite | 🟢 zadetek (🔊) | 🔴 zgrešek (🔊) | ● pika", balanceTitle: "💰 STANJE", balanceText: "Stanje: ", betTitle: "⚡ MNOŽITELJ STAVKE", betInfoPrefix: "⚙️ Trenutna stavka: ", betInfoUnits: " enot", playTypeTitle: "🎯 TIP IGRE (koliko številk)", startDraw: "✨ ZAČNI ŽREB", reset: "🔄 PONASTAVI IGRO", topUp: "➕ Napolni (+100)", drawHeader: "🎯 ŽREB", resultInfoPlaceholder: "⚡ Tip: – | Zadetkov: – | Natančnost: – | Izplačilo: – | Dobitek: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Tip: ${pt} | 🎯 Zadetkov: ${hits} | 📊 Natančnost: ${acc}% | 💰 Izplačilo: ${payout}x | 💎 Dobitek: ${win}`, rulesTitle: "📖 Pravila igre Dozen", rulesText: `<ul><li>Igra na <strong>mreži 12×12</strong>. Vsaka celica = številka (1–12) + pozicija žreba (1.,2.,…,12.).</li><li><strong>Tip igre:</strong> Izberite koliko številk (1-11).</li><li><strong>Množitelj stavke:</strong> 1× do 5×.</li><li><strong>Izberite številke:</strong> Tapnite celice. Številka se prikaže. Izberite točno toliko kot vaš tip.</li><li><strong>Žreb:</strong> Kliknite. Sistem generira 12 naključnih številk.</li><li><strong>Zadetek:</strong> Če se vaša številka ujema z izžrebano na tej poziciji. Več zadetkov = višji množitelj.</li><li><strong>Tabela izplačil:</strong> Lebdeči gumb 📜.</li><li><strong>Stanje:</strong> Začne pri 0. Napolnite. Pri ničli – žalosten zvok.</li></ul><p>Srečno! 🍀</p>`, payoutModalTitle: "Tabela izplačil", playHeader: "Tip", hitsHeader: "Zadetkov", multHeader: "Množitelj", soundOn: "🔊 ZVOK VKLJUČEN", soundOff: "🔇 ZVOK IZKLJUČEN", payoutButton: "📜 TABELA IZPLAČIL", rulesButton: "📖 PRAVILA", alerts: { noPlayType: "Izberite tip igre.", maxNumbers: pt=>`Izberete lahko največ ${pt} številk.`, noBet: "Izberite množitelj stavke.", wrongCount: pt=>`Izberite točno ${pt} številk.`, insufBalance: "Premalo stanja. Napolnite.", noPlayTypeDraw: "Izberite tip.", noBetDraw: "Izberite množitelj." } },
+        es: { gameTitle: "🎯 DOZEN JUEGO", drawLabel: "🎯 SORTEO + TABLERO 12×12", infoLabel: "✔️ toque → seleccionar | 🟢 acierto (🔊) | 🔴 fallo (🔊) | ● punto", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ MULTIPLICADOR DE APUESTA", betInfoPrefix: "⚙️ Apuesta actual: ", betInfoUnits: " unidades", playTypeTitle: "🎯 TIPO DE JUEGO (cuántos números)", startDraw: "✨ INICIAR SORTEO", reset: "🔄 REINICIAR JUEGO", topUp: "➕ Recargar (+100)", drawHeader: "🎯 SORTEO", resultInfoPlaceholder: "⚡ Tipo: – | Aciertos: – | Precisión: – | Pago: – | Ganancia: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Tipo: ${pt} | 🎯 Aciertos: ${hits} | 📊 Precisión: ${acc}% | 💰 Pago: ${payout}x | 💎 Ganancia: ${win}`, rulesTitle: "📖 Reglas del Juego Dozen", rulesText: `<ul><li>Se juega en una <strong>cuadrícula 12×12</strong>. Cada celda representa un número (1–12) y una posición de sorteo (1º, 2º, …, 12º).</li><li><strong>Tipo de juego:</strong> Elige cuántos números seleccionar (1 a 11).</li><li><strong>Multiplicador de apuesta:</strong> 1×, 2×, 3×, 4× o 5× – tu apuesta total.</li><li><strong>Selecciona tus números:</strong> Toca celdas. Aparecerá el número. Debes seleccionar exactamente tantos como tu tipo.</li><li><strong>Iniciar sorteo:</strong> Haz clic. El sistema genera 12 números aleatorios – uno por posición.</li><li><strong>Ganar:</strong> Coincidencia entre tu número y el sorteado en esa posición. Más aciertos, mayor multiplicador.</li><li><strong>Tabla de pagos:</strong> Botón flotante 📜 PAYOUT TABLE.</li><li><strong>Saldo:</strong> Comienza en 0. Usa Recargar. Si llega a cero, sonido triste.</li></ul><p>¡Buena suerte! 🍀</p>`, payoutModalTitle: "Tabla de Pagos", playHeader: "Tipo", hitsHeader: "Aciertos", multHeader: "Multiplicador", soundOn: "🔊 SONIDO ON", soundOff: "🔇 SONIDO OFF", payoutButton: "📜 TABLA DE PAGOS", rulesButton: "📖 REGLAS", alerts: { noPlayType: "Selecciona un Tipo de juego.", maxNumbers: pt=>`Máximo ${pt} números.`, noBet: "Elige un multiplicador.", wrongCount: pt=>`Selecciona exactamente ${pt} números.`, insufBalance: "Saldo insuficiente. Recarga.", noPlayTypeDraw: "Elige un tipo.", noBetDraw: "Elige un multiplicador." } },
+        sv: { gameTitle: "🎯 DOZEN SPEL", drawLabel: "🎯 DRAGNING + 12×12 RUTNÄT", infoLabel: "✔️ tryck → välj | 🟢 träff (🔊) | 🔴 miss (🔊) | ● prick", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ INSATSMULTIPLIKATOR", betInfoPrefix: "⚙️ Nuvarande insats: ", betInfoUnits: " enheter", playTypeTitle: "🎯 SPELTYP (hur många nummer)", startDraw: "✨ START DRAGNING", reset: "🔄 ÅTERSTÄLL SPEL", topUp: "➕ Ladda upp (+100)", drawHeader: "🎯 DRAGNING", resultInfoPlaceholder: "⚡ Speltyp: – | Träffar: – | Precision: – | Utbetalning: – | Vinst: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Speltyp: ${pt} | 🎯 Träffar: ${hits} | 📊 Precision: ${acc}% | 💰 Utbetalning: ${payout}x | 💎 Vinst: ${win}`, rulesTitle: "📖 Dozen Spelregler", rulesText: `<ul><li>Spelas på ett <strong>12×12 rutnät</strong>. Varje cell representerar ett nummer (1–12) och en dragningsposition (1:a,2:a,…,12:e).</li><li><strong>Speltyp:</strong> Välj hur många nummer du vill välja (1-11).</li><li><strong>Insatsmultiplikator:</strong> 1×,2×,3×,4×,5×.</li><li><strong>Välj nummer:</strong> Tryck på celler. Numret visas. Välj exakt så många som din speltyp.</li><li><strong>Dra:</strong> Klicka. Systemet genererar 12 slumpnummer.</li><li><strong>Vinna:</strong> Om ditt nummer matchar dragna numret på den positionen. Fler träffar = högre multiplikator.</li><li><strong>Utbetalningstabell:</strong> Flytande knapp 📜.</li><li><strong>Saldo:</strong> Startar på 0. Ladda upp. Vid noll – ledsen ljud.</li></ul><p>Lycka till! 🍀</p>`, payoutModalTitle: "Utbetalningstabell", playHeader: "Speltyp", hitsHeader: "Träffar", multHeader: "Multiplikator", soundOn: "🔊 LJUD PÅ", soundOff: "🔇 LJUD AV", payoutButton: "📜 UTBETALNINGSTABELL", rulesButton: "📖 SPELREGLER", alerts: { noPlayType: "Välj en speltyp först.", maxNumbers: pt=>`Du kan välja max ${pt} nummer.`, noBet: "Välj insatsmultiplikator.", wrongCount: pt=>`Välj exakt ${pt} nummer.`, insufBalance: "Otillräckligt saldo. Ladda upp.", noPlayTypeDraw: "Välj en speltyp.", noBetDraw: "Välj insatsmultiplikator." } },
+        uk: { gameTitle: "🎯 DOZEN ГРА", drawLabel: "🎯 РОЗІГРАШ + СІТКА 12×12", infoLabel: "✔️ торкніться → вибрати | 🟢 влучення (🔊) | 🔴 промах (🔊) | ● крапка", balanceTitle: "💰 БАЛАНС", balanceText: "Баланс: ", betTitle: "⚡ МНОЖНИК СТАВКИ", betInfoPrefix: "⚙️ Поточна ставка: ", betInfoUnits: " одиниць", playTypeTitle: "🎯 ТИП ГРИ (скільки чисел)", startDraw: "✨ ПОЧАТИ РОЗІГРАШ", reset: "🔄 СКИНУТИ ГРУ", topUp: "➕ Поповнити (+100)", drawHeader: "🎯 РОЗІГРАШ", resultInfoPlaceholder: "⚡ Тип: – | Влучень: – | Точність: – | Виплата: – | Виграш: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Тип: ${pt} | 🎯 Влучень: ${hits} | 📊 Точність: ${acc}% | 💰 Виплата: ${payout}x | 💎 Виграш: ${win}`, rulesTitle: "📖 Правила гри Dozen", rulesText: `<ul><li>Гра на <strong>сітці 12×12</strong>. Кожна клітинка = число (1–12) + позиція розіграшу (1-ша,2-га,…,12-та).</li><li><strong>Тип гри:</strong> Виберіть кількість чисел (1-11).</li><li><strong>Множник ставки:</strong> 1×,2×,3×,4×,5×.</li><li><strong>Виберіть числа:</strong> Торкніться клітинок. З’явиться число. Виберіть рівно стільки, скільки ваш тип.</li><li><strong>Розіграш:</strong> Натисніть. Система генерує 12 випадкових чисел.</li><li><strong>Виграш:</strong> Якщо ваше число збігається з розіграним на цій позиції. Більше влучень = вищий множник.</li><li><strong>Таблиця виплат:</strong> Плаваюча кнопка 📜.</li><li><strong>Баланс:</strong> Починається з 0. Поповніть. При нулі – сумний звук.</li></ul><p>Удачі! 🍀</p>`, payoutModalTitle: "Таблиця виплат", playHeader: "Тип", hitsHeader: "Влучення", multHeader: "Множник", soundOn: "🔊 ЗВУК УВІМК.", soundOff: "🔇 ЗВУК ВИМК.", payoutButton: "📜 ТАБЛИЦЯ ВИПЛАТ", rulesButton: "📖 ПРАВИЛА", alerts: { noPlayType: "Виберіть тип гри.", maxNumbers: pt=>`Максимум ${pt} чисел.`, noBet: "Виберіть множник ставки.", wrongCount: pt=>`Виберіть рівно ${pt} чисел.`, insufBalance: "Недостатньо балансу. Поповніть.", noPlayTypeDraw: "Виберіть тип.", noBetDraw: "Виберіть множник." } }
     };
 
     let currentLang = "en";
@@ -801,16 +207,59 @@
     let currentPlayType = null;
     let currentBetMultiplier = null;
 
-    // --- SOUND SYSTEM (unchanged) ---
+    // --- Sound: starts muted, enabled by first click on sound toggle ---
     let audioCtx = null;
-    let soundEnabled = true;
-    function initAudio() { if (audioCtx) return; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    let soundEnabled = false;      // initially OFF
+    let audioResumed = false;
+
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function enableSound() {
+        if (!audioCtx) initAudio();
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume().then(() => {
+                soundEnabled = true;
+                audioResumed = true;
+                const t = translations[currentLang];
+                soundToggle.innerHTML = t.soundOn;
+                // optional: play a short click to confirm
+                generateSound('click');
+            }).catch(e => console.log("Audio resume failed", e));
+        } else {
+            soundEnabled = true;
+            audioResumed = true;
+            const t = translations[currentLang];
+            soundToggle.innerHTML = t.soundOn;
+        }
+    }
+
+    function disableSound() {
+        soundEnabled = false;
+        const t = translations[currentLang];
+        soundToggle.innerHTML = t.soundOff;
+        // do not suspend AudioContext, just mute further sounds
+    }
+
     function playSound(type) {
         if (!soundEnabled) return;
         if (!audioCtx) initAudio();
-        if (audioCtx.state === 'suspended') { audioCtx.resume().then(() => generateSound(type)).catch(e=>console.log(e)); }
-        else generateSound(type);
+        if (audioCtx.state === 'running') {
+            generateSound(type);
+        } else if (audioCtx.state === 'suspended') {
+            // if not yet resumed, resume and then play
+            audioCtx.resume().then(() => {
+                soundEnabled = true;
+                audioResumed = true;
+                generateSound(type);
+                const t = translations[currentLang];
+                soundToggle.innerHTML = t.soundOn;
+            }).catch(e => console.log("Audio resume failed", e));
+        }
     }
+
     function generateSound(type) {
         if (!audioCtx) return;
         const now = audioCtx.currentTime;
@@ -940,9 +389,11 @@
     });
 
     soundToggle.addEventListener("click", () => {
-        soundEnabled = !soundEnabled;
-        const t = translations[currentLang];
-        soundToggle.innerHTML = soundEnabled ? t.soundOn : t.soundOff;
+        if (soundEnabled) {
+            disableSound();
+        } else {
+            enableSound();
+        }
     });
 
     payoutToggle.addEventListener("click", () => {
@@ -952,7 +403,7 @@
             const rows = [];
             for (let h in payoutTable[p]) {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${p}</td><td>${h}</td><td>${formatNumber(payoutTable[p][h])}</td>`;
+                tr.innerHTML = `<tr>${p}</td><td>${h}</td><td>${formatNumber(payoutTable[p][h])}</td>`;
                 rows.push(tr);
             }
             const bgClass = colorToggle ? "payout-group-light" : "payout-group-dark";
@@ -978,8 +429,11 @@
             const drawHeaderTh = document.querySelector("#gridBody tr.draw-row th.axis");
             if (drawHeaderTh) drawHeaderTh.innerHTML = translations[currentLang].drawHeader;
         }, 50);
+        // Do NOT wake up audio automatically. Sound is off by default.
+        // The user must click the sound toggle to enable.
     });
 
+    // Game logic functions (identical to previous version)
     function getSelectedPlayType() { const c = document.querySelector("input[name='playType']:checked"); return c ? parseInt(c.value,10) : null; }
     function getSelectedBetMultiplier() { const c = document.querySelector("input[name='betMult']:checked"); return c ? parseInt(c.value,10) : null; }
     function animateCellClick(cell) {
@@ -1040,7 +494,7 @@
     function onNumberCellClick(event) {
         const td = event.currentTarget;
         if (td.classList.contains("blocked") || td.classList.contains("hit") || td.classList.contains("miss")) return;
-        initAudio(); playSound('click');
+        playSound('click');
         const pt = getSelectedPlayType();
         if (!pt) { alert(translations[currentLang].alerts.noPlayType); return; }
         animateCellClick(td);
@@ -1232,7 +686,6 @@
     initBetMultipliers();
     updateBalanceUI();
     resetBoard(false);
-    document.body.addEventListener('click', () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
 </script>
 </body>
 </html>
