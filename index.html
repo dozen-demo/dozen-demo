@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,8 +9,8 @@
     * { box-sizing: border-box; user-select: none; }
     body { font-family: 'Segoe UI', Arial, sans-serif; padding: 16px 12px; background: #0a0f1a; color: #eef4ff; min-width: 1000px; }
     h2, h3 { margin: 0 0 12px 0; font-weight: 500; letter-spacing: 0.5px; }
-    h2 { font-size: 1.4rem; border-left: 5px solid #4caf50; padding-left: 12px; margin-bottom: 16px; }
-    .app-container { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+    h2 { font-size: 1.4rem; border-left: 5px solid #4caf50; padding-left: 12px; margin-bottom: 16px; margin-right: 260px; } /* hely a jobb felső gomboknak */
+    .app-container { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; margin-top: 10px; } /* feljebb hozva a táblázat */
     .game-area { flex: 1; overflow-x: auto; background: #0f141f; border-radius: 20px; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
     .right-panel { width: 280px; background: #0f141f; border-radius: 20px; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
     .section-box { background: #121826; border-radius: 16px; padding: 12px 14px; margin-bottom: 16px; border: 1px solid #2a2f3f; }
@@ -49,8 +50,28 @@
     .info-line { font-size: 13px; margin: 6px 0; }
     .section-title { font-size: 18px; margin-bottom: 10px; border-left: 3px solid #4caf50; padding-left: 10px; }
     .draw-label { font-size: 11px; background: #00000066; border-radius: 20px; padding: 2px 8px; display: inline-block; }
-    .floating-buttons { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; background: transparent; }
-    .sound-toggle, .payout-toggle, .rules-toggle, .lang-selector { background: #1e2538; border-radius: 40px; padding: 6px 12px; font-size: 12px; cursor: pointer; border: none; color: #eef4ff; font-family: inherit; transition: opacity 0.2s; opacity: 0.8; }
+    /* Floating buttons - TOP RIGHT */
+    .floating-buttons {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+        z-index: 1000;
+        background: transparent;
+    }
+    .sound-toggle, .payout-toggle, .rules-toggle, .lang-selector {
+        background: #1e2538;
+        border-radius: 40px;
+        padding: 6px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        border: none;
+        color: #eef4ff;
+        font-family: inherit;
+        transition: opacity 0.2s;
+        opacity: 0.8;
+    }
     .payout-toggle { background: #4c6e8c; }
     .rules-toggle { background: #2c3e66; }
     .lang-selector { background: #1e2538; cursor: pointer; }
@@ -175,7 +196,7 @@
         11:{0:0,1:0,2:1,3:4,4:20,5:80,6:400,7:2500,8:20000,9:80000,10:200000,11:1000000}
     };
 
-    // --- TRANSLATIONS (22 languages, complete) ---
+    // Translations object (22 languages) – complete
     const translations = {
         en: { gameTitle: "🎯 DOZEN GAME", drawLabel: "🎯 DRAW + 12x12 BOARD", infoLabel: "✔️ tap → select | 🟢 hit (🔊) | 🔴 miss (🔊) | ● dot", balanceTitle: "💰 BALANCE", balanceText: "Balance: ", betTitle: "⚡ BET MULTIPLIER", betInfoPrefix: "⚙️ Current bet: ", betInfoUnits: " units", playTypeTitle: "🎯 PLAY TYPE (how many numbers)", startDraw: "✨ START DRAW", reset: "🔄 RESET GAME", topUp: "➕ Top‑up (+100)", drawHeader: "🎯 DRAW", resultInfoPlaceholder: "⚡ Play type: – | Hits: – | Accuracy: – | Payout: – | Win: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Play type: ${pt} | 🎯 Hits: ${hits} | 📊 Accuracy: ${acc}% | 💰 Payout: ${payout}x | 💎 Win: ${win}`, rulesTitle: "📖 Dozen Game Rules", rulesText: `<ul><li>The game is played on a <strong>12×12 grid</strong>. Each cell represents a number (1–12) and a draw position (1st draw, 2nd draw, …, 12th draw).</li><li><strong>Play Type:</strong> Choose how many numbers you want to select (1 to 11). This is your "play type".</li><li><strong>Select a Bet Multiplier:</strong> Choose 1×, 2×, 3×, 4× or 5× – your total stake.</li><li><strong>Select your numbers:</strong> Tap on cells to select numbers. The selected number will appear in the cell. You must select exactly as many numbers as your Play Type.</li><li><strong>Start Draw:</strong> Click START DRAW. The system randomly generates 12 numbers – one for each draw position.</li><li><strong>Winning:</strong> You win if the number you selected matches the drawn number in that exact draw position. The more hits, the higher the payout multiplier.</li><li><strong>Payout Table:</strong> Click the floating 📜 PAYOUT TABLE button to see all multipliers.</li><li><strong>Balance:</strong> Your balance starts at 0. Use Top‑up to add credits. If your balance reaches zero, a sad sound will play.</li></ul><p style="margin-top:10px;">Good luck and have fun! 🍀</p>`, payoutModalTitle: "Payout Table", playHeader: "Play", hitsHeader: "Hits", multHeader: "Multiplier", soundOn: "🔊 Sound ON", soundOff: "🔇 Sound OFF", payoutButton: "📜 PAYOUT TABLE", rulesButton: "📖 GAME RULES", alerts: { noPlayType: "Please select a Play Type first.", maxNumbers: pt=>`You can select at most ${pt} numbers.`, noBet: "Please select a Bet Multiplier.", wrongCount: pt=>`You must select exactly ${pt} numbers.`, insufBalance: "Insufficient balance. Please top up.", noPlayTypeDraw: "Please choose a Play Type.", noBetDraw: "Please select a Bet Multiplier." } },
         af: { gameTitle: "🎯 DOZEN SPEL", drawLabel: "🎯 TREKKING + 12×12 ROOSTER", infoLabel: "✔️ tik → kies | 🟢 treffer (🔊) | 🔴 mis (🔊) | ● kolletjie", balanceTitle: "💰 SALDO", balanceText: "Saldo: ", betTitle: "⚡ INSET MULTIPLIKATOR", betInfoPrefix: "⚙️ Huidige inset: ", betInfoUnits: " eenhede", playTypeTitle: "🎯 SPELTIPE (hoeveel getalle)", startDraw: "✨ BEGIN TREKKING", reset: "🔄 HERSTEL SPEL", topUp: "➕ Herlaai (+100)", drawHeader: "🎯 TREKKING", resultInfoPlaceholder: "⚡ Speltipe: – | Treffers: – | Akkuraatheid: – | Uitbetaling: – | Wins: –", resultInfo: (pt, hits, acc, payout, win) => `🎯 Speltipe: ${pt} | 🎯 Treffers: ${hits} | 📊 Akkuraatheid: ${acc}% | 💰 Uitbetaling: ${payout}x | 💎 Wins: ${win}`, rulesTitle: "📖 Dozen Spelreëls", rulesText: `<ul><li>Gespeel op 'n <strong>12×12 rooster</strong>. Elke sel = getal (1–12) + trekposisie (1ste,2de,…,12de).</li><li><strong>Speltipe:</strong> Kies hoeveel getalle (1-11).</li><li><strong>Inset multiplikator:</strong> 1× tot 5×.</li><li><strong>Kies getalle:</strong> Tik op selle. Die getal verskyn. Kies presies jou speltipe.</li><li><strong>Trekk:</strong> Klik. Stelsel genereer 12 ewekansige getalle.</li><li><strong>Wen:</strong> As jou getal ooreenstem met getrekte getal op daardie posisie. Meer treffers = hoër multiplikator.</li><li><strong>Uitbetalingstabel:</strong> Drywende knoppie 📜.</li><li><strong>Saldo:</strong> Begin by 0. Herlaai. By nul – hartseer klank.</li></ul><p>Baie sterkte! 🍀</p>`, payoutModalTitle: "Uitbetalingstabel", playHeader: "Speltipe", hitsHeader: "Treffers", multHeader: "Multiplikator", soundOn: "🔊 KLANK AAN", soundOff: "🔇 KLANK AF", payoutButton: "📜 UITBETALINGSTABEL", rulesButton: "📖 SPELREËLS", alerts: { noPlayType: "Kies eers 'n speltipe.", maxNumbers: pt=>`Jy kan maksimum ${pt} getalle kies.`, noBet: "Kies 'n inset multiplikator.", wrongCount: pt=>`Kies presies ${pt} getalle.`, insufBalance: "Onvoldoende saldo. Herlaai.", noPlayTypeDraw: "Kies 'n speltipe.", noBetDraw: "Kies 'n multiplikator." } },
@@ -207,10 +228,9 @@
     let currentPlayType = null;
     let currentBetMultiplier = null;
 
-    // --- Sound: starts muted, enabled by first click on sound toggle ---
+    // Audio
     let audioCtx = null;
-    let soundEnabled = false;      // initially OFF
-    let audioResumed = false;
+    let soundEnabled = false;
 
     function initAudio() {
         if (audioCtx) return;
@@ -222,15 +242,12 @@
         if (audioCtx.state === 'suspended') {
             audioCtx.resume().then(() => {
                 soundEnabled = true;
-                audioResumed = true;
                 const t = translations[currentLang];
                 soundToggle.innerHTML = t.soundOn;
-                // optional: play a short click to confirm
                 generateSound('click');
             }).catch(e => console.log("Audio resume failed", e));
         } else {
             soundEnabled = true;
-            audioResumed = true;
             const t = translations[currentLang];
             soundToggle.innerHTML = t.soundOn;
         }
@@ -240,7 +257,6 @@
         soundEnabled = false;
         const t = translations[currentLang];
         soundToggle.innerHTML = t.soundOff;
-        // do not suspend AudioContext, just mute further sounds
     }
 
     function playSound(type) {
@@ -249,10 +265,8 @@
         if (audioCtx.state === 'running') {
             generateSound(type);
         } else if (audioCtx.state === 'suspended') {
-            // if not yet resumed, resume and then play
             audioCtx.resume().then(() => {
                 soundEnabled = true;
-                audioResumed = true;
                 generateSound(type);
                 const t = translations[currentLang];
                 soundToggle.innerHTML = t.soundOn;
@@ -403,7 +417,7 @@
             const rows = [];
             for (let h in payoutTable[p]) {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `<tr>${p}</td><td>${h}</td><td>${formatNumber(payoutTable[p][h])}</td>`;
+                tr.innerHTML = `<td>${p}</td><td>${h}</td><td>${formatNumber(payoutTable[p][h])}</td>`;
                 rows.push(tr);
             }
             const bgClass = colorToggle ? "payout-group-light" : "payout-group-dark";
@@ -429,11 +443,9 @@
             const drawHeaderTh = document.querySelector("#gridBody tr.draw-row th.axis");
             if (drawHeaderTh) drawHeaderTh.innerHTML = translations[currentLang].drawHeader;
         }, 50);
-        // Do NOT wake up audio automatically. Sound is off by default.
-        // The user must click the sound toggle to enable.
     });
 
-    // Game logic functions (identical to previous version)
+    // Game logic functions
     function getSelectedPlayType() { const c = document.querySelector("input[name='playType']:checked"); return c ? parseInt(c.value,10) : null; }
     function getSelectedBetMultiplier() { const c = document.querySelector("input[name='betMult']:checked"); return c ? parseInt(c.value,10) : null; }
     function animateCellClick(cell) {
